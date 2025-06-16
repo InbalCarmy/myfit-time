@@ -1,0 +1,134 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,100;0,200;0,400;0,700;1,100;1,200;1,400;1,800&display=swap');
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: url('/running-bg.jpg') center center / cover no-repeat;
+  font-family: 'Nunito', sans-serif;
+  color: #F2F2F2;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  /* background-color: rgba(0, 0, 0, 0.3); */
+  z-index: 0;
+}
+
+.logo {
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  z-index: 2;
+  font-family: 'Nunito', sans-serif;
+}
+
+
+.logo-my {
+  font-family: 'Nunito', sans-serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 52px;
+  color:#F2F2F2;
+}
+
+.logo-fit {
+  font-family: 'Nunito', sans-serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 37px;
+  margin-left: 6px;
+}
+
+
+
+.container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 16px;
+  margin-top: -48px;
+}
+
+.subtitle {
+  font-size: 50px;
+  font-weight: 100;
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.get-started {
+  width: 400px;   /* רוחב */
+  height: 80px;
+  background-color: rgba(242, 242, 242, 0.1);
+  color: #F2F2F2;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  padding: 12px 32px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
+}
+
+.get-started:hover {
+  background-color: rgba(242, 242, 242, 0.4);
+  margin-top: px;
+}
+
+.bottom-text {
+  margin-top: 10px;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+
+
+.home-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* חשוב! */
+  width: 100%;
+  background: url('/running-bg.jpg') center center / cover no-repeat;
+  font-family: 'Nunito', sans-serif;
+  color: #F2F2F2;
+  overflow: hidden;
+}
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -120px;
+}
+.register-link{
+  color:#7E9A9F;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  text-decoration: none;
+  margin-left: 4px;
+}
+.login-link{
+  color:#F2F2F2;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  margin-top: 16px;
+
+}

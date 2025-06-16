@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,100;0,200;0,400;0,700;1,100;1,200;1,400;1,800&display=swap');
+
+/* login.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', sans-serif;
+  
+  height: 100%;
+}
+
+main {
+  background: url('/your-bg-image.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.0);
+  backdrop-filter: blur(6px);
+  width: 320px;
+  text-align: center;
+}
+
+.login-form input {
+  padding: 14px 18px;
+  border: none;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.3);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.login-input {
+  padding: 14px 18px;
+  border: none;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.5); /* ← שנה כאן לצבע שתרצי */
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  width:240px ;
+  color: #333;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+   display: block;
+  margin: 0 auto;  
+}
+
+.login-form input::placeholder {
+  color: #F2F2F2;
+  font-weight: bold;
+}
+
+.login-form button {
+  border: none;
+  border-radius: 16px;
+  padding: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 18px;
+}
+
+.login-form .email-login-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #333;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  width: 100px;
+  height: 100%;
+  display: block;
+  margin: 0 auto;  
+}
+
+.login-form .email-login-btn:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+
+.login-form .google-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #F2F2F2;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+
+}
+.login-form .google-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.login-form .google-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.login-form .bottom-text {
+  font-size: 14px;
+  color: #eee;
+  font-weight: 400;
+  font-family: 'Nunito', sans-serif;
+}
+
+.login-form .bottom-text a {
+  color: #7E9A9F;
+  font-weight: bold;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+}
+
