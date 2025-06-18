@@ -1,0 +1,394 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Overlock:wght@400;700;900&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.dashboard-main {
+  background: url('/running-bg.jpg') no-repeat center center / cover;
+  min-height: 100vh;
+  padding: 2vw;
+  font-family: 'Overlock', sans-serif;
+  position: relative;
+  color: #f2f2f2;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-auto-rows: auto;
+  gap: 2vw;
+  padding: 3vh 4vw;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* מיקומים לכל כרטיס */
+.weekly-running {
+  grid-column: 3 / span 7;
+  grid-row: 1;
+}
+
+.next-workout {
+  grid-column: 10 / span 5;
+  grid-row: 1;
+}
+
+.weekly-goal {
+  grid-column: 5 / span 3;
+  grid-row: 2;
+}
+
+.challenge {
+  grid-column:9 / span 5;
+  grid-row: 2;
+}
+
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 4vh auto;
+  width: 90%;
+  max-width: 1100px;
+  gap: 2vw;
+  align-items: flex-start;
+
+}
+
+
+.greeting {
+  font-size: clamp(28px, 3vw, 40px);
+  margin-top: 5vh;
+  margin-left: 15vw;
+  font-weight: 900;
+}
+
+
+ .weekly-goal {
+  width: clamp(180px, 18vw, 250px);
+  height: clamp(180px, 18vw, 250px);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 16px;
+  text-align: center;
+  font-family: 'Overlock', sans-serif;
+  color: #718F96;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.weekly-goal h4 {
+  font-size: clamp(18px, 2vw, 30px);
+  margin-bottom: 12px;
+  margin-top: 0px;
+  font-weight: 700;
+}
+
+.goal-value {
+  color: #fff;
+}
+
+
+.next-workout {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 12px 16px;
+  text-align: center;
+  color: #718F96;
+  font-family: 'Overlock', sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* gap: 6px; */
+  width: clamp(260px, 26vw, 360px);
+  /* 👇 אין height כאן */
+}
+
+.next-workout h4 {
+  font-weight: 700;
+  font-size: clamp(18px, 1.8vw, 24px);
+  margin: 0 0 6px 0;
+}
+
+.next-workout p {
+  font-size: clamp(14px, 1.4vw, 18px);
+  margin: 2px 0;
+}
+
+.middle-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 4vh auto;
+  width: 90%;
+  max-width: 1100px;
+  gap: 2vw;
+  align-items: flex-start;
+
+}
+
+.challenge {
+  width: clamp(260px, 28vw, 380px);
+  min-height: clamp(220px, 40vh, 340px);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 20px;
+  color: #718F96;
+  text-align: center;
+  font-family: 'Overlock', sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.challenge h4 {
+  font-family: 'Overlock', sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 1.5vw, 20px);
+}
+
+.challenge p {
+  color: rgba(63, 113, 2, 0.7);
+  text-align: left;
+  font-weight: 400;
+  font-family: 'Overlock', sans-serif;
+}
+
+.challenge small {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  color: rgba(63, 113, 2, 0.7);
+  font-family: 'Overlock', sans-serif;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.challenge-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.weekly-running {
+  width: clamp(320px, 42vw, 520px);
+  min-height: clamp(160px, 24vh, 240px);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  font-family: 'Overlock', sans-serif;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+.weekly-running h3 {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+.weekly-running p {
+  font-size: clamp(14px, 1.5vw, 18px);
+  margin: 3px 0;
+  font-weight: 400;
+  color: #fff;
+
+}
+.date-range {
+  font-size: clamp(13px, 1.2vw, 16px);
+  color: #f2f2f2;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats {
+  text-align: left;
+  color: #dbe3e5;
+  font-size: clamp(14px, 1.4vw, 18px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.distance {
+  font-size: clamp(30px, 3vw, 46px);
+  font-weight: 800;
+  color: #718F96;
+}
+
+
+
+.dots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dot {
+  width: clamp(20px, 4vw, 36px);
+  height: clamp(20px, 4vw, 36px);
+  border-radius: 50%;
+  background-color: white;
+  opacity: 0.6;
+}
+
+.dot.green {
+  background-color: #A3C4A8;
+  opacity: 1;
+}
+
+.dot.dark {
+  background-color: #476A6F;
+  opacity: 1;
+}
+
+.challenge-icons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pill {
+  background-color: rgba(63, 113, 2, 0.7);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255);
+  font-family: 'Overlock', sans-serif;
+}
+
+.pill-qlock {
+  color: #718F96;
+  font-size: 20px;
+}
+
+.circle-goal {
+  display: block;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto;
+  margin-top: 50px;
+  position: relative;
+}
+
+.progress-bg {
+  opacity: 0.2;
+}
+
+.progress-bar {
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.goal-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-family: 'Overlock', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+
+  
+}
+
+.side-nav {
+  position: absolute;
+  top: 10vh;
+  right: 2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nav-btn {
+  width: clamp(70px, 7vw, 100px);
+  height: clamp(70px, 7vw, 100px);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 110px;
+  height: 110px;
+}
+
+.nav-btn:hover {
+background-color: rgba(113, 143, 150, 0.4);
+}
+
+.nav-btn img {
+  width: 50%;
+  height: 50%;
+}
+
+.nav-btn.diary {
+  background-image: url('/icons/diary-icon.svg');
+}
+
+.nav-btn.calendar {
+  background-image: url('/icons/calendar-icon.svg');
+}
+
+.nav-btn.insights {
+  background-image: url('/icons/insights-icon.svg');
+}
+
+.nav-btn.profile {
+  background-image: url('/icons/profile-icon.svg');
+}
+@media (max-width: 900px) {
+  .top-section,
+  .middle-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .weekly-running,
+  .next-workout,
+  .weekly-goal,
+  .challenge {
+    width: 90%;
+    min-width: 280px;
+    margin-bottom: 20px;
+  }
+
+  .side-nav {
+    top: auto;
+    bottom: 5vh;
+    right: 50%;
+    transform: translateX(50%);
+    flex-direction: row;
+    gap: 12px;
+  }
+
+}

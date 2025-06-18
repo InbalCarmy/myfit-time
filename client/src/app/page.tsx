@@ -10,12 +10,12 @@ export default function HomePage() {
     <main className="home-container">
       <div className="overlay" />
 
-      <div className="logo">
+      {/* <div className="logo">
         <h1>
           <span className="logo-my">My</span>
           <span className="logo-fit">FitTime.</span>
         </h1>
-      </div>
+      </div> */}
 
       <div className="content">
         <p className="subtitle">

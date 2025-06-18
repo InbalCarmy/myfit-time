@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,100;0,200;0,400;0,700;1,100;1,200;1,400;1,800&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.register-main {
+  background: url('/running-bg.jpg') no-repeat center center / cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Nunito', sans-serif;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  border-radius: 20px;
+  width: 320px;
+  text-align: center;
+}
+
+.register-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #F2F2F2;
+  margin-bottom: 12px;
+}
+
+.register-input {
+  width: 100%;
+  width:280px;
+  height:30px;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #F2F2F2;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+   display: block;
+  margin: 0 auto;  
+}
+
+
+
+.register-input::placeholder {
+  color: #f2f2f2;
+  font-weight: bold;
+}
+
+.register-btn {
+  padding: 14px;
+  font-size: 18px;
+  background-color:rgba(113, 143, 150, 0.4);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  width: 100px;
+  height: 100%;
+  display: block;
+  margin: 0 auto; 
+  color: white;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.register-btn:hover {
+  background-color:rgba(113, 143, 150, 0.7);
+}
+
+
+.google-btn {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #F2F2F2;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.register-bottom-text {
+  font-size: 14px;
+  color: #F2F2F2;
+  font-weight: 400;
+  font-family: 'Nunito', sans-serif;
+}
+
+.register-bottom-text a {
+  font-family: 'Nunito', sans-serif;
+
+  color: #7E9A9F;
+  font-weight: 700;
+  text-decoration: none;
+}

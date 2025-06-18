@@ -1,4 +1,5 @@
 'use client';
+import './register.css';
 
 import { useState } from 'react';
 import { auth, googleProvider } from '@/firebase/firebaseConfig';
@@ -12,49 +13,37 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+  const [displayName, setDisplayName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
 
 
-
-  // const handleRegister = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setErrorMessage('');
-
-  //   try {
-  //     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  //     await saveUserToFirestore(userCredential.user);
-  //     console.log('Registered as:', userCredential.user.email);
-  //     window.location.href = '/'; // מעביר לדף הבית
-  //   } catch (error: any) {
-  //     if (error.code === 'auth/email-already-in-use') {
-  //       setErrorMessage('כבר קיים חשבון עם האימייל הזה. עבור למסך ההתחברות.');
-  //     } else {
-  //       setErrorMessage('אירעה שגיאה בהרשמה. נסה שוב.');
-  //     }
-  //     console.error('Registration error:', error);
-  //   }
-  // };
-
- const handleRegister = async (e: React.FormEvent) => {
+  
+  const handleRegister = async (e: React.FormEvent) => {
   e.preventDefault();
   setErrorMessage('');
 
+  if (password !== confirmPassword) {
+    setErrorMessage('Passwords do not match');
+    return;
+  }
+
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await saveUserToFirestore(userCredential.user);
+    await saveUserToFirestore(userCredential.user, displayName);
     console.log('Registered as:', userCredential.user.email);
 
-    // כאן השינוי
-    router.push('/home');
+    router.push('/dashbord');
   } catch (error: any) {
     if (error.code === 'auth/email-already-in-use') {
-      setErrorMessage('כבר קיים חשבון עם האימייל הזה. עבור למסך ההתחברות.');
+      setErrorMessage('An account with this email already exists. Please log in.');
     } else {
-      setErrorMessage('אירעה שגיאה בהרשמה. נסה שוב.');
+      setErrorMessage('Registration failed. Please try again.');
     }
     console.error('Registration error:', error);
   }
 };
+
 
 
 
@@ -70,61 +59,65 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 to-purple-100 p-4">
-      <form
-        onSubmit={handleRegister}
-        className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center text-purple-700">הרשמה</h1>
+    <main className="register-main">
+      <form onSubmit={handleRegister} className="register-form">
         {errorMessage && (
-          <div className="bg-red-100 text-red-700 p-2 mb-4 rounded text-center text-sm">
-            {errorMessage}
-          </div>
+          <div className="register-error">{errorMessage}</div>
         )}
-
+        <input
+          type="text"
+          placeholder="Account Name"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          className="register-input"
+        />
 
         <input
           type="email"
-          placeholder="אימייל"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="register-input"
           required
         />
+
         <input
           type="password"
-          placeholder="סיסמה"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-6 border rounded"
+          className="register-input"
           required
         />
 
-        <button
-          type="submit"
-          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700"
-        >
-          הרשם
+        <input
+          type="password"
+          placeholder="Verify Your Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="register-input"
+          required
+        />
+
+        <button type="submit" className="register-btn">
+          Register
         </button>
 
-        <div className="my-4 text-center text-sm text-gray-500">או</div>
 
         <button
           type="button"
           onClick={handleGoogleRegister}
-          className="w-full bg-white border border-gray-300 text-black py-2 rounded hover:bg-gray-100 flex items-center justify-center gap-2"
+          className="google-btn"
         >
-          <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
-          הרשמה עם Google
+          <img src="/google-icon.png" alt="Google" className="google-icon" />
+          Register with Google
         </button>
 
-        <p className="mt-4 text-sm text-center">
-          כבר יש לך חשבון?{' '}
-          <a href="/login" className="text-purple-600 hover:underline">
-            התחבר כאן
-          </a>
+        <p className="register-bottom-text">
+          Already have an account? <a href="/login">Login</a>
         </p>
       </form>
     </main>
+
   );
 }
