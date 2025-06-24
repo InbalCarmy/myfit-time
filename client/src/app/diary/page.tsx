@@ -7,6 +7,25 @@ import { auth } from '@/firebase/firebaseConfig';
 import { useEffect } from 'react';
 import { query, where, getDocs } from 'firebase/firestore';
 
+const parseDurationToMinutes = (duration: string): number => {
+  if (!duration || typeof duration !== 'string') return NaN;
+
+  const parts = duration.split(':').map(Number);
+
+  if (parts.length === 3) {
+    const [hours, minutes, seconds] = parts;
+    if ([hours, minutes, seconds].some(isNaN)) return NaN;
+    return hours * 60 + minutes + seconds / 60;
+  } else if (parts.length === 2) {
+    const [minutes, seconds] = parts;
+    if ([minutes, seconds].some(isNaN)) return NaN;
+    return minutes + seconds / 60;
+  }
+
+  return NaN;
+};
+
+
 export default function DiaryPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tooltip, setTooltip] = useState('');
@@ -62,7 +81,8 @@ export default function DiaryPage() {
         notes: '',
       });
     }
-  };
+    };
+    
 
   fetchWorkout();
 }, [selectedDate]);
@@ -81,19 +101,45 @@ export default function DiaryPage() {
     notes: '',
   });
 
- const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+//  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+//   const { name, value, type } = e.target;
+
+//   const newValue =
+//     type === 'number'
+//       ? parseFloat(value) || 0  // ודא שמספרים יישמרו כמספר
+//       : value;
+
+//   setFormData(prev => ({
+//     ...prev,
+//     [name]: newValue,
+//   }));
+  // };
+  
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   const { name, value, type } = e.target;
+  const newValue = type === 'number' ? parseFloat(value) || 0 : value;
 
-  const newValue =
-    type === 'number'
-      ? parseFloat(value) || 0  // ודא שמספרים יישמרו כמספר
-      : value;
-
-  setFormData(prev => ({
-    ...prev,
+  const updated = {
+    ...formData,
     [name]: newValue,
-  }));
+  };
+
+  let calculatedPace = formData.pace;
+
+  const distance = parseFloat(updated.distance);
+  const durationMinutes = parseDurationToMinutes(updated.duration);
+
+  if (!isNaN(distance) && distance > 0 && !isNaN(durationMinutes) && durationMinutes > 0) {
+    const paceDecimal = durationMinutes / distance;
+    calculatedPace = formatPace(paceDecimal);
+  }
+
+  setFormData({
+    ...updated,
+    pace: calculatedPace,
+  });
 };
+
 
 
   
@@ -168,7 +214,7 @@ export default function DiaryPage() {
   }
 
   try {
-    const formattedPace = formatPace(parseFloat(formData.pace));
+    const formattedPace = formData.pace;
 
     await addDoc(collection(db, 'workouts'), {
       ...formData,
@@ -197,12 +243,23 @@ export default function DiaryPage() {
           <label>Distance:</label>
           <input type="number" name="distance" value={formData.distance} onChange={handleChange} />
           <label>Avg. Pace:</label>
-          <input type="text" name="pace" value={formData.pace} onChange={handleChange} />
+          <div className="calculated-pace">{formData.pace}</div>
         </div>
+
 
         <div className="input-row">
           <label>Duration:</label>
-          <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
+          <input
+            type="text"
+            name="duration"
+            placeholder="HH:MM:SS or MM:SS"
+            pattern="^(\d{1,2}:\d{2}|\d{1,2}:\d{2}:\d{2})$"
+            title="Please enter duration in MM:SS or HH:MM:SS format"
+            value={formData.duration}
+            onChange={handleChange}
+            required
+          />
+
           <label>Calories:</label>
           <input type="number" name="calories" value={formData.calories} onChange={handleChange} />
         </div>
