@@ -225,7 +225,7 @@ body, html {
 
 .stats {
   text-align: left;
-  color: #dbe3e5;
+  color: #fff;
   font-size: clamp(14px, 1.4vw, 18px);
   display: flex;
   flex-direction: column;

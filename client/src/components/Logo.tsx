@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Logo() {
   return (
     <div className="logo-container">
-      <Link href="/">
+      <Link href="/dashboard">
         <span className="logo">
           <span className="logo-my">My</span>
           <span className="logo-fit">FitTime</span>
@@ -25,6 +25,8 @@ export default function Logo() {
         left: 20px;
         z-index: 2;
         font-family: 'Nunito', sans-serif;
+        cursor: pointer;
+
       }
 
 

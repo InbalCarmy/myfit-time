@@ -25,7 +25,7 @@ export default function LoginPage() {
       await saveUserToFirestore(user);
       console.log('Logged in as:', user.email);
 
-      router.push('/dashbord');
+      router.push('/dashboard');
     } catch (error: any) {
       console.error('Email login error:', error);
 
@@ -44,7 +44,7 @@ export default function LoginPage() {
 
       await saveUserToFirestore(user);
       console.log('Logged in as:', user.displayName);
-      router.push('/dashbord');
+      router.push('/dashboard');
     } catch (error) {
       console.error('Google login error:', error);
       alert('שגיאה בהתחברות עם Google');

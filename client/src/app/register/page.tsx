@@ -33,7 +33,7 @@ export default function RegisterPage() {
     await saveUserToFirestore(userCredential.user, displayName);
     console.log('Registered as:', userCredential.user.email);
 
-    router.push('/dashbord');
+    router.push('/dashboard');
   } catch (error: any) {
     if (error.code === 'auth/email-already-in-use') {
       setErrorMessage('An account with this email already exists. Please log in.');

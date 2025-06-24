@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Overlock:ital@1&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
+.calendar-container {
+  background: url('/running-bg.jpg') no-repeat center center / cover;
+  min-height: 100vh;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  padding: 4rem 2rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* או center אם את רוצה הכל באמצע לגמרי */
+  box-sizing: border-box;
+  padding-top: 5rem;
+}
+
+
+.week-bar {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  overflow-x: auto;
+  justify-content: center;
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+
+}
+
+.day-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 0.6rem;
+}
+
+
+.day-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.day-label {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #785434;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  text-align: center;
+
+}
+
+.day-card p {
+  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+}
+
+.day-card {
+  background: linear-gradient(to bottom, rgba(120, 84, 52, 0.5), rgba(120, 84, 52, 0));
+  backdrop-filter: blur(10px);
+  border-radius: 1.9rem;
+  padding: 1.2rem;
+  min-width: 130px;
+  max-width: 150px;
+  text-align: center;
+  color: white;
+  transition: transform 0.3s;
+   min-height: 250px;
+   font-size: ;
+}
+
+
+.workout-complete p,
+.workout-time p {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.add-workout {
+  font-size: 0.85rem;
+  /* margin-top: 0.5rem; */
+  color: rgba(255,255,255,0.85);
+}
+
+.find-time-btn {
+  background-color:rgba(163, 185, 178, 0.6);
+  border: none;
+  border-radius: 1rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.3rem;
+  color: white;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem; /* רווח בין האייקון לטקסט */
+  align-self: flex-start; 
+  margin-left: 5.5rem;
+  margin-top: 0.3rem;
+}
+
+.find-time-btn:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+
+.suggested-section {
+  width: 100%;
+  max-width: 600px;
+  align-self: flex-start;
+  margin-left: 5.5rem;
+}
+
+.suggested-title {
+  font-size: 1.3rem;
+  /* font-weight: bold; */
+  font-style: italic;
+  margin-bottom: 1rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.suggested-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.suggested-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.suggested-slot {
+  background-color: rgba(163, 185, 178, 0.6);
+  border-radius: 2rem;
+  padding: 0.4rem 0.8rem;
+  width: 100%;
+  max-width: 250px;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-size: 1rem;
+  font-style: italic;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.add-slot-btn {
+  background-color: rgba(255,255,255,0);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.add-slot-btn:hover {
+  background-color: rgba(255,255,255,0.4);
+  color: black;
+}
+
+
+
+.add-slot-btn:hover {
+  background-color: rgba(255,255,255,0.5);
+  color: black;
+}
+.line-divider {
+  width: 100%;
+  max-width: 600px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.6);
+  margin: 1.5rem 0;
+  align-self: flex-start; 
+  margin-left: 5.5rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  backdrop-filter: blur(8px);
+  color: white;
+  font-style: italic;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  margin: 1rem 0 0.3rem;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 0.7rem;
+  border: none;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.modal-buttons button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.modal-buttons button:first-child {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.modal-buttons button:last-child {
+  background-color: #A3B9B2;
+  color: white;
+}
+
+
+
+@media (max-width: 768px) {
+  .week-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .calendar-container {
+    padding: 2rem 1rem;
+  }
+
+  .day-card {
+    min-width: 110px;
+    padding: 0.8rem;
+  }
+
+  .find-time-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+    .suggested-section {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: calc(100% - 2rem);
+  }
+
+  .suggested-slot {
+    flex-direction: row;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .add-slot-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+  }
+
+  .suggested-title {
+    font-size: 1.1rem;
+  }
+}

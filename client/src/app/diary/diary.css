@@ -1,0 +1,278 @@
+
+
+
+ @import url('https://fonts.googleapis.com/css2?family=Overlock:ital@1&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body, .diary-container {
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+
+}
+
+.diary-container {
+  background: url('/running-bg.jpg') no-repeat center center / cover;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4vw;
+  position: relative;
+
+
+}
+
+.diary-form {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 2rem;
+  padding: 3rem;
+  width: 100%;
+  max-width: 700px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.diary-date {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Overlock', cursive;
+}
+
+
+.diary-title {
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 2fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+ 
+}
+
+.input-row label {
+  align-self: center;
+  font-weight: 500;
+}
+
+.input-row input {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 100%;
+  max-width: 160px;
+
+}
+
+.run-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+.run-buttons button {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 5000px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  /* font-weight: 200; */
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
+}
+
+
+.run-type,
+.effort,
+.time-of-day {
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* בסיס ה־slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #4e7077 0%, #4e7077 50%, #ccc 50%, #ccc 100%);
+  border-radius: 4px;
+  outline: none;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+/* העיגול של הסליידר */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  /* background: white; */
+  /* border: 2px solid #4e7077; */
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #4e7077;
+  cursor: pointer;
+}
+
+/* אפקט hover */
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: #4e7077;
+}
+
+.slider-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.slider-tooltip {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  pointer-events: none;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  white-space: nowrap;
+}
+.run-buttons button.selected {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+
+/* .run-type button, */
+.time-of-day button {
+  margin-right: 1rem;
+  padding: 0.4rem 1.2rem;
+  border: none;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.run-type button.selected,
+.time-of-day button.selected {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.submit-btn {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.8rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+}
+
+.submit-btn:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+
+
+.navigation-arrows {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.arrow-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.arrow-btn img {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+
+
+.arrow-btn:hover img {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.diary-form {
+  position: relative;
+}
+
+/* 📱 מסכים קטנים */
+@media (max-width: 768px) {
+  .diary-form {
+    padding: 2rem;
+  }
+
+  .input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .diary-title {
+    font-size: 1.6rem;
+  }
+
+
+}
