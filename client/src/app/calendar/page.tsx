@@ -1,11 +1,15 @@
+
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import './calendar.css';
 import PlanWorkoutModal from '@/components/PlanWorkoutModal';
-import { collection, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '@/firebase/firebaseConfig';
 import { startOfWeek, endOfWeek, format } from 'date-fns';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered } from '@/utils/googleCalendar';
 
 
 
@@ -35,12 +39,10 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [workouts, setWorkouts] = useState<Record<string, any>>({});
   const [userId, setUserId] = useState<string | null>(null);
+  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+  const [freeTimeSlots, setFreeTimeSlots] = useState<{ start: Date; end: Date }[]>([]);
 
-  const suggestedSlots = [
-    { day: 'Today', time: '18:00 - 18:45' },
-    { day: 'Wed', time: '07:00 - 07:30' },
-    { day: 'Fri', time: '14:00 - 15:00' }
-  ];
+
 
   const handleOpenModal = (date: string) => {
     setSelectedDate(date);
@@ -78,30 +80,68 @@ const CalendarPage = () => {
   };
 
   const handleCancelWorkout = async (date: string) => {
-  if (!userId) return;
+    if (!userId) return;
 
-  const q = query(
-    collection(db, 'workouts'),
-    where('userId', '==', userId),
-    where('date', '==', date),
-    where('status', '==', 'planned')
-  );
+    const q = query(
+      collection(db, 'workouts'),
+      where('userId', '==', userId),
+      where('date', '==', date),
+      where('status', '==', 'planned')
+    );
 
-  const snapshot = await getDocs(q);
-  if (!snapshot.empty) {
-    const docRef = snapshot.docs[0].ref;
-    await deleteDoc(docRef);
-    fetchWorkouts(userId); // רענון
-  }
-};
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const docRef = snapshot.docs[0].ref;
+      await deleteDoc(docRef);
+      fetchWorkouts(userId);
+    }
+  };
 
+  const handleGoogleCalendarAuth = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
+    provider.addScope('https://www.googleapis.com/auth/calendar.events');
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+
+      if (token) {
+        console.log('Access token:', token);
+
+        // שליפת אירועים מהיומן
+        const events = await fetchGoogleCalendarEvents(token);
+        console.log('📅 Google Calendar events:', events);
+        setCalendarEvents(events);
+
+        // הפקת חלונות זמן פנויים
+        const existingWorkoutDates = Object.keys(workouts); // מתוך ה-Firestore
+        
+        console.log('📅 תאריכי אימונים:', existingWorkoutDates);
+
+      const freeSlots = getFreeTimeSlotsFiltered(events, existingWorkoutDates);
+      console.log('🟢 Filtered Free time slots:', freeSlots);
+      setFreeTimeSlots(freeSlots);
+
+      }
+    } catch (error) {
+      console.error('Google Calendar auth failed:', error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
+      console.log('👤 Email:', user.email);
+      console.log('🆔 UID:', user.uid);
+      console.log('📛 Display Name:', user.displayName);
+
         setUserId(user.uid);
         fetchWorkouts(user.uid);
       } else {
+        console.log('❌ No user is signed in');
+        
         setUserId(null);
         setWorkouts({});
       }
@@ -136,21 +176,11 @@ const CalendarPage = () => {
                     <div className="workout-time">
                       <img src="/clock.png" alt="clock" className="day-icon" />
                       <p>{formatTime(workout.time)} • {workout.type}</p>
-                      <button
-                        onClick={() => handleCancelWorkout(day)}
-                        className="cancel-btn"
-                      >
-                        Cancel
-                      </button>
+                      <button onClick={() => handleCancelWorkout(day)} className="cancel-btn">Cancel</button>
                     </div>
-
                   )
                 ) : (
-                  <div
-                    className="add-workout"
-                    onClick={() => handleOpenModal(day)}
-                    style={{ cursor: 'pointer' }}
-                  >
+                  <div className="add-workout" onClick={() => handleOpenModal(day)} style={{ cursor: 'pointer' }}>
                     <img src="/plus.png" alt="plus" className="day-icon" />
                     <p>Add workout</p>
                   </div>
@@ -163,7 +193,7 @@ const CalendarPage = () => {
 
       <div className="line-divider"></div>
 
-      <button className="find-time-btn">
+      <button className="find-time-btn" onClick={handleGoogleCalendarAuth}>
         <img src="/clock.png" alt="clock" className="btn-icon" />
         Find time for a workout
       </button>
@@ -175,13 +205,25 @@ const CalendarPage = () => {
         </p>
 
         <div className="suggested-boxes">
-          {suggestedSlots.map((slot, i) => (
-            <div key={i} className="suggested-slot">
-              <span>• {slot.day} • {slot.time}</span>
-              <button className="add-slot-btn">＋</button>
-            </div>
-          ))}
+          {freeTimeSlots.length > 0 ? (
+            freeTimeSlots.map((slot, i) => {
+              const start = new Date(slot.start);
+              const end = new Date(slot.end);
+              const day = start.toLocaleDateString('en-US', { weekday: 'short' });
+              const timeRange = `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+              return (
+                <div key={i} className="suggested-slot">
+                  <span>• {day} • {timeRange}</span>
+                  <button className="add-slot-btn">＋</button>
+                </div>
+              );
+            })
+          ) : (
+            <p>No free slots available</p>
+          )}
         </div>
+
       </div>
 
       <div className="line-divider"></div>
