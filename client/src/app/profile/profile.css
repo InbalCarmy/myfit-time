@@ -1,0 +1,435 @@
+@import url('https://fonts.googleapis.com/css2?family=Overlock:ital@1&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
+
+.profile-container {
+  background: url('/running-bg.jpg') no-repeat center center / cover;
+  min-height: 100vh;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  padding: 4vw;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+
+
+.profile-header {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 2.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 1rem;
+  margin-left: -140px;
+}
+
+.user-photo {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.3rem;
+  overflow: hidden;
+}
+
+.user-photo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.user-text .user-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.user-text .user-email {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* .profile-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-auto-rows: auto;
+  gap: 1.5vh 2vw;
+  padding: 3vh 4vw;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+} */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 עמודות */
+  gap: 2.5rem 3rem; /* ריווח בין שורות ועמודות */
+  padding: 3vh 4vw;
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: -60px;
+}
+
+
+.profile-card {
+  border-radius: 1rem;
+  padding: 0;
+
+}
+
+.goal       { grid-area: goal; }
+.prefs      { grid-area: prefs; }
+.challenge  { grid-area: challenge; }
+.aggregate  { grid-area: aggregate; }
+
+.profile-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.profile-card p,
+.profile-card label,
+.profile-card li {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-card input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+    color: #718F96;
+  margin-top: 0.5rem;
+  font-family: 'Overlock', cursive;
+}
+
+.profile-card button {
+  margin-top: 0.8rem;
+  padding: 0.5rem 1.3rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  font-style: italic;
+  font-family: 'Overlock', cursive;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.profile-card button:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+ .logout-btn {
+    background: rgba(255, 255, 255, 0.4);
+  color: #718F96;
+  grid-column: 12 / span 10;
+  grid-row: 3;
+  margin-top: 30px; 
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  border: none;
+  font-family: 'Overlock', sans-serif;
+  cursor: pointer;
+  border-radius: 1rem;
+  font-weight: 700;
+}
+
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-title {
+  font-size: 0.5rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-left: 0.3rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.goal-box {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 380px; /* אפשר גם 100% אם בתוך גריד */
+  width: 100%;
+  position: relative;
+  color: #718F96;
+}
+.goal-select {
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #718F96;;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+
+.goal-input-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.goal-input {
+  flex: 1;
+  padding: 0.6rem 1.2rem;
+  border-radius: 9999px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.3);
+ color: #718F96;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.goal-input::placeholder {
+  color: #718F96;;
+}
+
+.goal-save-btn {
+  background: rgba(255, 255, 255, 0.4);
+  color: #718F96;
+  border: none;
+  padding: 0.5rem 1.3rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.goal-save-btn:hover {
+  background-color: rgba(137, 159, 159, 0.8);
+}
+
+.goal-achieved-text {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: #718F96;
+}
+
+.prefs-box {
+  display: flex;
+  align-items: flex-start;
+}
+
+.profile-card-title {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #718F96;
+  margin-bottom: 0.5rem;
+}
+
+.prefs {
+  grid-area: prefs;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 0.5rem;
+}
+
+.prefs-inner-box {
+  background: rgba(255, 255, 255, 0.2);
+  color: #718F96;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(6px);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+    align-items: flex-start;
+}
+.time-icons {
+  display: flex;
+  gap: 1rem;
+}
+.time-icons img {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: transform 0.2s ease;
+}
+
+.time-icons img:hover {
+  transform: scale(1.15);
+  opacity: 1;
+}
+.prefs-time-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.prefs-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+
+.prefs-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Overlock', cursive;
+  font-size: 1rem;
+  color: #718F96;
+  white-space: nowrap; /* 💡 מונע ירידת שורה */
+}
+
+
+
+.challenge-box {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  max-width: 430px;
+}
+
+.challenge-text {
+  color: #718F96;
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+.challenge-date {
+  font-size: 0.9rem;
+  color: #718F96;
+  font-style: italic;
+}
+
+.challenge-buttons {
+  display: flex;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.challenge-btn {
+  background: rgba(255, 255, 255, 0.4);
+  color: #718F96;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.5rem 1.2rem;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+}
+
+.challenge-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.challenge-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: black;
+}
+
+.aggregate {
+  grid-area: aggregate;
+}
+
+.aggregate-box {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem;
+  padding: 1.5rem 2rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 450px;
+}
+
+.aggregate-list {
+  list-style: disc inside;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  color: #718F96; /* 💙 צבע הטקסט */
+  font-style: italic;
+  font-size: 1rem;
+}
+
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "goal"
+      "prefs"
+      "challenge"
+      "aggregate";
+  }
+
+  .profile-card {
+    padding: 1.5rem;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+}
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 2rem;
+  }
+
+
+}

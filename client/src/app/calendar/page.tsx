@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -7,17 +5,22 @@ import './calendar.css';
 import PlanWorkoutModal from '@/components/PlanWorkoutModal';
 import { collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '@/firebase/firebaseConfig';
-import { startOfWeek, endOfWeek, format } from 'date-fns';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered } from '@/utils/googleCalendar';
+import { startOfWeek, endOfWeek, addWeeks, subWeeks, format } from 'date-fns';
+import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered } from '@/utils/googleCalendar';
 
-
-
-const getCurrentWeekDates = (): string[] => {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const sunday = new Date(today);
-  sunday.setDate(today.getDate() - dayOfWeek);
+// const getWeekDates = (baseDate: Date): string[] => {
+//   const sunday = startOfWeek(baseDate, { weekStartsOn: 0 });
+//   return Array.from({ length: 7 }, (_, i) => {
+//     const d = new Date(sunday);
+//     d.setDate(sunday.getDate() + i);
+//     return d.toISOString().split('T')[0];
+//   });
+// };
+const getWeekDates = (baseDate: Date): string[] => {
+  const date = new Date(baseDate);
+  const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+  const sunday = new Date(date);
+  sunday.setDate(date.getDate() - dayOfWeek); // מחזיר ליום ראשון של השבוע הנוכחי
 
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(sunday);
@@ -25,6 +28,8 @@ const getCurrentWeekDates = (): string[] => {
     return d.toISOString().split('T')[0];
   });
 };
+
+
 
 const formatTime = (time: string) => {
   const [h, m] = time.split(':');
@@ -41,11 +46,12 @@ const CalendarPage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const [freeTimeSlots, setFreeTimeSlots] = useState<{ start: Date; end: Date }[]>([]);
+  const [defaultTime, setDefaultTime] = useState<string | null>(null);
+  const [currentWeek, setCurrentWeek] = useState(new Date());
 
-
-
-  const handleOpenModal = (date: string) => {
+  const handleOpenModal = (date: string, time?: string) => {
     setSelectedDate(date);
+    if (time) setDefaultTime(time);
     setIsModalOpen(true);
   };
 
@@ -54,12 +60,12 @@ const CalendarPage = () => {
   };
 
   const handleWorkoutSaved = () => {
-    if (userId) fetchWorkouts(userId);
+    if (userId) fetchWorkouts(userId, currentWeek);
   };
 
-  const fetchWorkouts = async (uid: string) => {
-    const start = format(startOfWeek(new Date(), { weekStartsOn: 0 }), 'yyyy-MM-dd');
-    const end = format(endOfWeek(new Date(), { weekStartsOn: 0 }), 'yyyy-MM-dd');
+  const fetchWorkouts = async (uid: string, baseDate: Date) => {
+    const start = format(startOfWeek(baseDate, { weekStartsOn: 0 }), 'yyyy-MM-dd');
+    const end = format(endOfWeek(baseDate, { weekStartsOn: 0 }), 'yyyy-MM-dd');
 
     const q = query(
       collection(db, 'workouts'),
@@ -73,7 +79,10 @@ const CalendarPage = () => {
 
     snapshot.forEach(doc => {
       const workout = doc.data();
-      data[workout.date] = workout;
+      const date = workout.date;
+      if (!data[date] || workout.status === 'completed') {
+        data[date] = workout;
+      }
     });
 
     setWorkouts(data);
@@ -92,103 +101,112 @@ const CalendarPage = () => {
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
       const docRef = snapshot.docs[0].ref;
+      const workoutData = snapshot.docs[0].data();
+      const eventId = workoutData.googleEventId;
+      if (eventId) {
+        const token = localStorage.getItem('googleAccessToken');
+        if (token) {
+          try {
+            await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`, {
+              method: 'DELETE',
+              headers: { Authorization: `Bearer ${token}` },
+            });
+          } catch (error) {
+            console.error('❌ Failed to delete Google Calendar event:', error);
+          }
+        }
+      }
       await deleteDoc(docRef);
-      fetchWorkouts(userId);
+      fetchWorkouts(userId, currentWeek);
     }
   };
 
   const handleGoogleCalendarAuth = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
-    provider.addScope('https://www.googleapis.com/auth/calendar.events');
-
+    const token = await ensureGoogleCalendarAccess();
+    if (!token) return;
     try {
-      const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
-
-      if (token) {
-        console.log('Access token:', token);
-
-        // שליפת אירועים מהיומן
-        const events = await fetchGoogleCalendarEvents(token);
-        console.log('📅 Google Calendar events:', events);
-        setCalendarEvents(events);
-
-        // הפקת חלונות זמן פנויים
-        const existingWorkoutDates = Object.keys(workouts); // מתוך ה-Firestore
-        
-        console.log('📅 תאריכי אימונים:', existingWorkoutDates);
-
+      const events = await fetchGoogleCalendarEvents(token);
+      setCalendarEvents(events);
+      const existingWorkoutDates = Object.keys(workouts);
       const freeSlots = getFreeTimeSlotsFiltered(events, existingWorkoutDates);
-      console.log('🟢 Filtered Free time slots:', freeSlots);
       setFreeTimeSlots(freeSlots);
-
-      }
     } catch (error) {
-      console.error('Google Calendar auth failed:', error);
+      console.error('❌ Failed to fetch calendar data:', error);
     }
   };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-      console.log('👤 Email:', user.email);
-      console.log('🆔 UID:', user.uid);
-      console.log('📛 Display Name:', user.displayName);
-
         setUserId(user.uid);
-        fetchWorkouts(user.uid);
+        fetchWorkouts(user.uid, currentWeek);
       } else {
-        console.log('❌ No user is signed in');
-        
         setUserId(null);
         setWorkouts({});
       }
     });
+      console.log('🗓 ימות השבוע שנשלפו:', getWeekDates(currentWeek).map(d => format(new Date(d), 'EEEE')));
 
     return () => unsubscribe();
-  }, []);
+  }, [currentWeek]);
+
+  const handlePrevWeek = () => setCurrentWeek(prev => subWeeks(prev, 1));
+  const handleNextWeek = () => setCurrentWeek(prev => addWeeks(prev, 1));
 
   return (
     <div className="calendar-container">
-      <div className="week-bar">
-        {getCurrentWeekDates().map((day, i) => {
-          const workout = workouts[day];
+      <div className="week-bar-wrapper">
+        <button onClick={handlePrevWeek} className="arrow-button arrow-left">
+          <img src="/arrow-left.png" alt="Previous week" />
+        </button>
 
-          return (
-            <div key={i} className="day-wrapper">
-              <p className="day-label">
-                {new Date(day).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-              </p>
+        <div className="week-bar">
+          {getWeekDates(currentWeek).map((day, i) => {
+            const workout = workouts[day];
+            return (
+              <div key={i} className="day-wrapper">
+                <p className="day-label">
+                  {/* {new Date(day).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} */}
+                  {format(new Date(day), 'EEE, MMM d')}
 
-              <div className={`day-card fade-${i + 1}`}>
-                {workout ? (
-                  workout.status === 'completed' ? (
-                    <div className="workout-complete">
-                      <img src="/check.png" alt="check" className="day-icon" />
-                      <p>Workout completed:</p>
-                      <p>• {workout.distance} km</p>
-                      <p>• {workout.calories} kcal</p>
-                      <p>• {workout.pace} Avg. Pace</p>
-                    </div>
+                </p>
+                <div className={`day-card fade-${i + 1}`}>
+                  {workout ? (
+                    workout.status === 'completed' ? (
+                      <div className="workout-complete">
+                        <img src="/check.png" alt="check" className="day-icon" />
+                        <p>Workout completed:</p>
+                        <p>• {workout.distance} km</p>
+                        <p>• {workout.calories} kcal</p>
+                        <p>• {workout.pace} Avg. Pace</p>
+                      </div>
+                    ) : (
+                      <div className="workout-time">
+                        <img src="/clock.png" alt="clock" className="day-icon" />
+                        <p>{formatTime(workout.time)} • {workout.type}</p>
+                        <div className="workout-controls">
+                          {workout.googleEventId && (
+                            <img src="/google-icon-outline.png" alt="Google Calendar" className="google-calendar-icon" />
+                          )}
+                          <button onClick={() => handleCancelWorkout(day)} className="cancel-btn">Cancel</button>
+                        </div>
+                      </div>
+                    )
                   ) : (
-                    <div className="workout-time">
-                      <img src="/clock.png" alt="clock" className="day-icon" />
-                      <p>{formatTime(workout.time)} • {workout.type}</p>
-                      <button onClick={() => handleCancelWorkout(day)} className="cancel-btn">Cancel</button>
+                    <div className="add-workout" onClick={() => handleOpenModal(day)} style={{ cursor: 'pointer' }}>
+                      <img src="/plus.png" alt="plus" className="day-icon" />
+                      <p>Add workout</p>
                     </div>
-                  )
-                ) : (
-                  <div className="add-workout" onClick={() => handleOpenModal(day)} style={{ cursor: 'pointer' }}>
-                    <img src="/plus.png" alt="plus" className="day-icon" />
-                    <p>Add workout</p>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+
+        <button onClick={handleNextWeek} className="arrow-button arrow-right">
+          <img src="/arrow-right.png" alt="Next week" />
+        </button>
       </div>
 
       <div className="line-divider"></div>
@@ -203,19 +221,21 @@ const CalendarPage = () => {
           <img src="/calendar.png" alt="calendar icon" className="suggested-icon" />
           Suggested slots:
         </p>
-
         <div className="suggested-boxes">
           {freeTimeSlots.length > 0 ? (
             freeTimeSlots.map((slot, i) => {
               const start = new Date(slot.start);
-              const end = new Date(slot.end);
-              const day = start.toLocaleDateString('en-US', { weekday: 'short' });
-              const timeRange = `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+              const dayStr = start.toISOString().split('T')[0];
+              const timeStr = start.toTimeString().slice(0, 5);
+              const dayLabel = start.toLocaleDateString('en-US', { weekday: 'short' });
+              const timeRange = `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(slot.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
               return (
                 <div key={i} className="suggested-slot">
-                  <span>• {day} • {timeRange}</span>
-                  <button className="add-slot-btn">＋</button>
+                  <span>• {dayLabel} • {timeRange}</span>
+                  <button className="add-slot-btn" onClick={() => handleOpenModal(dayStr, timeStr)}>
+                    ＋
+                  </button>
                 </div>
               );
             })
@@ -223,7 +243,6 @@ const CalendarPage = () => {
             <p>No free slots available</p>
           )}
         </div>
-
       </div>
 
       <div className="line-divider"></div>
@@ -231,8 +250,12 @@ const CalendarPage = () => {
       {isModalOpen && userId && (
         <PlanWorkoutModal
           date={selectedDate}
+          defaultTime={defaultTime ?? ''}
           userId={userId}
-          onClose={handleCloseModal}
+          onClose={() => {
+            handleCloseModal();
+            setDefaultTime(null);
+          }}
           onSave={handleWorkoutSaved}
         />
       )}

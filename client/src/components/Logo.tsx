@@ -34,7 +34,7 @@ export default function Logo() {
         font-family: 'Nunito', sans-serif;
         font-style: italic;
         font-weight: 600;
-        font-size: 52px;
+        font-size: 42px;
         color:#F2F2F2;
       }
 
@@ -42,7 +42,7 @@ export default function Logo() {
         font-family: 'Nunito', sans-serif;
         font-style: italic;
         font-weight: 400;
-        font-size: 37px;
+        font-size: 27px;
         margin-left: 1px;
         color: #f2f2f2;
       }

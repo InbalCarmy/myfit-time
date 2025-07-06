@@ -19,7 +19,7 @@ export const saveUserToFirestore = async (user: User, displayName?: string) => {
   await setDoc(userRef, {
     uid: user.uid,
     email: user.email,
-    displayName: displayName || user.displayName || '',
+    displayName: user.displayName || '',
     photoURL: user.photoURL || '',
     createdAt: new Date(),
   });

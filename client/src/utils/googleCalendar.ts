@@ -1,5 +1,67 @@
 import axios from 'axios';
 import { isSameDay, isWithinInterval, startOfDay, endOfDay, startOfWeek, endOfWeek, format } from 'date-fns';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/firebase/firebaseConfig';
+
+
+export const ensureGoogleCalendarAccess = async (): Promise<string | null> => {
+  console.log('⚡ Running ensureGoogleCalendarAccess');
+
+  const currentEmail = auth.currentUser?.email;
+  const savedToken = localStorage.getItem('googleAccessToken');
+  const savedEmail = localStorage.getItem('googleTokenUserEmail');
+
+  // 🧪 בדיקה אם הטוקן שמור תואם למשתמש הנוכחי ועדיין תקף
+  if (savedToken && currentEmail === savedEmail) {
+    try {
+      const response = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${savedToken}`);
+      const data = await response.json();
+      if (!data.error) {
+        console.log('✅ Using existing valid token for', currentEmail);
+        return savedToken;
+      } else {
+        console.warn('⚠️ Token expired or invalid');
+      }
+    } catch (e) {
+      console.error('❌ Token check failed:', e);
+    }
+
+    // ננקה את הטוקן הלא תקף
+    localStorage.removeItem('googleAccessToken');
+    localStorage.removeItem('googleTokenUserEmail');
+  }
+
+  // 🧑‍🚀 התחברות חדשה עם גוגל לקבלת טוקן חדש
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
+    provider.addScope('https://www.googleapis.com/auth/calendar.events');
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    console.log('🔐 Signing in with Google...');
+    const result = await signInWithPopup(auth, provider);
+
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential?.accessToken || null;
+
+    if (token) {
+      localStorage.setItem('googleAccessToken', token);
+      localStorage.setItem('googleTokenUserEmail', result.user.email || '');
+      console.log('🔐 Got new Google Calendar token for:', result.user.email);
+      return token;
+    } else {
+      console.error('❌ No access token received');
+      return null;
+    }
+  } catch (error) {
+    console.error('❌ Google Calendar sign-in failed:', error);
+    alert('Google Sign-In is required to access calendar features.');
+    return null;
+  }
+};
+
+
+
 
 export const fetchGoogleCalendarEvents = async (accessToken: string) => {
   const now = new Date().toISOString();

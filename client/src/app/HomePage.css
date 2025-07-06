@@ -63,9 +63,10 @@ body {
   font-style: italic;
   margin-bottom: 24px;
 }
-
-.get-started {
-  width: 400px;   /* רוחב */
+ .google-btn {
+    display: flex;
+    align-items: center;
+  width: 500px;   
   height: 80px;
   background-color: rgba(242, 242, 242, 0.1);
   color: #F2F2F2;
@@ -76,13 +77,26 @@ body {
   border-radius: 20px;
   border: none;
   cursor: pointer;
+    gap: 0.6rem;
+
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: background-color 0.3s ease;
 }
 
-.get-started:hover {
+.google-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.google-btn:hover {
   background-color: rgba(242, 242, 242, 0.4);
   margin-top: px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 1rem;
+  text-align: center;
 }
 
 .bottom-text {
@@ -116,14 +130,7 @@ body {
   justify-content: center;
   margin-top: -120px;
 }
-.register-link{
-  color:#7E9A9F;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  text-decoration: none;
-  margin-left: 4px;
-}
+
 .login-link{
   color:#F2F2F2;
   font-family: 'Nunito', sans-serif;

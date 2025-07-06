@@ -89,7 +89,7 @@ html, body {
 }
 
 .find-time-btn {
-  background-color:rgba(163, 185, 178, 0.6);
+  background-color:rgba(120, 84, 52, 0.3);
   border: none;
   border-radius: 1rem;
   padding: 0.8rem 2rem;
@@ -108,7 +108,7 @@ html, body {
 }
 
 .find-time-btn:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(120, 84, 52, 0.6);
 }
 
 .btn-icon {
@@ -148,7 +148,7 @@ html, body {
 }
 
 .suggested-slot {
-  background-color: rgba(163, 185, 178, 0.6);
+  background-color: rgba(120, 84, 52, 0.5);
   border-radius: 2rem;
   padding: 0.4rem 0.8rem;
   width: 100%;
@@ -245,6 +245,55 @@ html, body {
   justify-content: space-between;
   margin-top: 2rem;
 }
+.cancel-btn,
+.save-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+.cancel-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.save-btn {
+  background-color: #A3B9B2;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #87a29b;
+}
+
+/* עיצוב ל-checkbox */
+.checkbox-container {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #A3B9B2;
+}
 
 .modal-buttons button {
   padding: 0.6rem 1.2rem;
@@ -266,6 +315,7 @@ html, body {
   color: white;
 }
 
+
 .cancel-btn {
   background-color: rgba(161, 110, 65, 0.3); /* A16E41 עם שקיפות */
   color: white;
@@ -281,6 +331,70 @@ html, body {
 
 .cancel-btn:hover {
   background-color: rgba(161, 110, 65, 0.5); /* קצת פחות שקוף בהובר */
+}
+
+.workout-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.google-calendar-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  opacity: 0.9;
+  transition: transform 0.2s ease;
+  margin-bottom: -0.2rem; /* יעלה אותו טיפה */
+}
+
+.google-calendar-icon:hover {
+  transform: scale(1.1);
+}
+
+
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.2s ease;
+}
+
+.arrow-button img {
+  width: 20px;
+  height: 20px;
+}
+
+.arrow-button:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.arrow-left {
+  left: -20px;
+}
+
+.arrow-right {
+  right: -20px;
+}
+
+.week-bar-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 

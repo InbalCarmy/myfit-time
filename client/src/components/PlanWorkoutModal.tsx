@@ -3,34 +3,86 @@
 import React, { useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
+import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered } from '@/utils/googleCalendar';
+
 
 interface PlanWorkoutModalProps {
   date: string; // yyyy-mm-dd
+  defaultTime?: string; // 'HH:MM' format
   onClose: () => void;
   onSave: () => void;
   userId: string;
 }
 
-const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, onClose, onSave, userId }) => {
+
+const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, defaultTime = '', onClose, onSave, userId }) => {
   const [type, setType] = useState('Easy');
-  const [time, setTime] = useState('');
+  // const [time, setTime] = useState('');
+  const [time, setTime] = useState(defaultTime);
   const [distanceOrDuration, setDistanceOrDuration] = useState('');
   const [loading, setLoading] = useState(false);
+  const [addToCalendar, setAddToCalendar] = useState(false);
 
   const handleSave = async () => {
     if (!time || !distanceOrDuration) return alert('Please fill all fields');
     setLoading(true);
+
     try {
+      let googleEventId: string | null = null;
+
+      // 1. אם המשתמש בחר לשמור גם בגוגל קלנדר
+      if (addToCalendar) {
+        const token = await ensureGoogleCalendarAccess();
+        if (!token) return;
+
+        const start = new Date(`${date}T${time}`);
+        const end = new Date(start.getTime() + 60 * 60 * 1000);
+
+        const calendarEvent = {
+          summary: `Workout: ${type}`,
+          description: `Planned with MyFitTime\nType: ${type}\nDistance/Duration: ${distanceOrDuration}`,
+          start: {
+            dateTime: start.toISOString(),
+            timeZone: 'Asia/Jerusalem',
+          },
+          end: {
+            dateTime: end.toISOString(),
+            timeZone: 'Asia/Jerusalem',
+          },
+        };
+
+        const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(calendarEvent),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Google Calendar Error:', errorData);
+          alert('Failed to add workout to Google Calendar');
+        } else {
+          const data = await response.json();
+          googleEventId = data.id;
+          console.log('✅ Workout added to Google Calendar with event ID:', googleEventId);
+        }
+      }
+
+      // 2. שמירה ל־Firestore (כולל googleEventId אם יש)
       await setDoc(doc(db, 'workouts', `${userId}_${date}`), {
         date,
         userId,
         type,
         time,
-        // planned: true,
-        // completed: false,
         status: 'planned',
         distanceOrDuration,
+        ...(googleEventId && { googleEventId }),
       });
+
+      // 3. סיום
       onSave();
     } catch (err) {
       console.error('Error saving workout:', err);
@@ -39,6 +91,8 @@ const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, onClose, onSa
       onClose();
     }
   };
+
+
 
   return (
     <div className="modal-overlay">
@@ -63,9 +117,20 @@ const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, onClose, onSa
           onChange={(e) => setDistanceOrDuration(e.target.value)}
         />
 
-        <div className="modal-actions">
-          <button onClick={onClose} disabled={loading}>Cancel</button>
-          <button onClick={handleSave} disabled={loading}>Save</button>
+        <div className="modal-buttons">
+          <button className="cancel-btn" onClick={onClose} disabled={loading}>Cancel</button>
+          <button className="save-btn" onClick={handleSave} disabled={loading}>Save</button>
+        </div>
+  
+        <div className="checkbox-container">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={addToCalendar}
+              onChange={(e) => setAddToCalendar(e.target.checked)}
+            />
+            Add to Google Calendar
+          </label>
         </div>
       </div>
     </div>

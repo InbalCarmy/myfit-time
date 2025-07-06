@@ -101,19 +101,6 @@ export default function DiaryPage() {
     notes: '',
   });
 
-//  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-//   const { name, value, type } = e.target;
-
-//   const newValue =
-//     type === 'number'
-//       ? parseFloat(value) || 0  // ודא שמספרים יישמרו כמספר
-//       : value;
-
-//   setFormData(prev => ({
-//     ...prev,
-//     [name]: newValue,
-//   }));
-  // };
   
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   const { name, value, type } = e.target;
@@ -140,9 +127,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   });
 };
 
-
-
-  
   const handleRunType = (type: string) => {
   setFormData(prev => ({
     ...prev,
