@@ -101,7 +101,7 @@ html, body {
   border-radius: 1rem;
   border: none;
   background: rgba(255, 255, 255, 0.3);
-    color: #718F96;
+  color: #718F96;
   margin-top: 0.5rem;
   font-family: 'Overlock', cursive;
 }
@@ -173,16 +173,6 @@ html, body {
   position: relative;
   color: #718F96;
 }
-.goal-select {
-  padding: 0.6rem 1rem;
-  border-radius: 9999px;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.3);
-  color: #718F96;;
-  font-family: 'Overlock', cursive;
-  font-style: italic;
-  font-size: 1rem;
-}
 
 
 .goal-input-row {
@@ -201,6 +191,9 @@ html, body {
   font-family: 'Overlock', cursive;
   font-style: italic;
   font-size: 1rem;
+    min-width: 100px; /* נסי גם 120px או יותר */
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .goal-input::placeholder {
@@ -218,8 +211,25 @@ html, body {
   font-style: italic;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
+    margin-bottom: 1rem;
 
+}
+.goal-select {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 0.8rem;
+  padding: 0.4rem 1rem;
+  font-family: 'Overlock', cursive;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+  color: #476A6F;
+  border: none;
+  outline: none;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  gap:1rem;
+}
 .goal-save-btn:hover {
   background-color: rgba(137, 159, 159, 0.8);
 }
@@ -257,7 +267,7 @@ html, body {
 }
 
 .prefs-inner-box {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   color: #718F96;
   border-radius: 1rem;
   padding: 1.5rem;
@@ -312,93 +322,51 @@ html, body {
   white-space: nowrap; /* 💡 מונע ירידת שורה */
 }
 
-
-
-.challenge-box {
-  background-color: rgba(255, 255, 255, 0.2);
+.challenge-box{
+  background-color: rgba(255, 255, 255, 0.25);
   border-radius: 1rem;
-  padding: 1.2rem;
+  padding: 1.5rem;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  max-width: 370px;
   width: 100%;
-  align-items: flex-start;
- gap: 0.1rem;
-}
-.profile-section.challenge {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
+  max-width: 400px;
 }
 
-.profile-card.profile-challenge {
-  background-color: transparent;
-  padding: 0;
-  border-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.8rem; /* מוסיף ריווח בין הכותרת לתיבה */
-}
-
-
-.challenge-text {
+.goal-label {
   color: #718F96;
-  font-size: 1.1rem;
-  font-style: italic;
-}
-
-.challenge-date {
-  font-size: 0.9rem;
-  color: #718F96;
-  font-style: italic;
-}
-
-.challenge-buttons {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.challenge-btn {
-  white-space: nowrap; 
-  background: rgba(255, 255, 255, 0.4);
-  color: #718F96;
-  border: none;
-  border-radius: 2rem;
-  /* padding: 0.5rem 1.2rem; */
-  font-family: 'Overlock', cursive;
-  font-style: italic;
   font-weight: 500;
-  font-size: 0.95rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
 }
 
-.challenge-btn img {
-  width: 18px;
-  height: 18px;
+.goalT-select {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 0.8rem;
+  padding: 0.4rem 1rem;
+  font-family: 'Overlock', cursive;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+  color: #476A6F;
+  border: none;
+  outline: none;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  gap:1rem;
+}
+.challenge-btn{
+  color:#718F96;
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
-.challenge-btn:hover {
-  background: rgba(255, 255, 255, 0.6);
-  color: black;
-}
-.profile-section.challenge h2
 
 .aggregate {
   grid-area: aggregate;
 }
 
 .aggregate-box {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.25);
   border-radius: 1rem;
   padding: 1.5rem 2rem;
   backdrop-filter: blur(8px);

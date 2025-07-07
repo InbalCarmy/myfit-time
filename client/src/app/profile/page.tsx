@@ -14,8 +14,10 @@ export default function ProfilePage() {
   const [weeklyDistance, setWeeklyDistance] = useState(0);
   const [totalRuns, setTotalRuns] = useState(0);
   const [totalDistance, setTotalDistance] = useState(0);
-const [totalTime, setTotalTime] = useState<string>('');
+  const [totalTime, setTotalTime] = useState<string>('');
   const [overallPace, setOverallPace] = useState('');
+  const [trainingGoalType, setTrainingGoalType] = useState("general");
+
   
 
   interface UserData {
@@ -58,9 +60,23 @@ const [userData, setUserData] = useState<UserData | null>(null);
     console.error('❌ Error during logout:', error);
   }
 };
+const handleSaveTrainingGoal = async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    await updateDoc(userRef, {
+      trainingGoal: trainingGoalType, // ← שימי לב שצריך סטייט נפרד!
+    });
+    alert('Training goal saved!');
+  } catch (err) {
+    console.error('Failed to save training goal:', err);
+  }
+};
 
   
-  const handleSaveGoal = async () => {
+const handleSaveWeeklyGoal = async () => {
   const user = auth.currentUser;
   if (!user) return;
 
@@ -71,12 +87,14 @@ const [userData, setUserData] = useState<UserData | null>(null);
         type: goalType,
         value: goalValue,
       },
+      trainingGoal: goalType, // 🟢 שדה נוסף ל-trainingGoal
     });
     alert('Goal saved!');
   } catch (err) {
     console.error('Failed to save goal:', err);
   }
 };
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -228,7 +246,7 @@ const [userData, setUserData] = useState<UserData | null>(null);
                 className="goal-input"
               />
 
-              <button onClick={handleSaveGoal} className="goal-save-btn">
+              <button onClick={handleSaveWeeklyGoal} className="goal-save-btn">
                 Save
               </button>
             </div>
@@ -294,22 +312,31 @@ const [userData, setUserData] = useState<UserData | null>(null);
       </div>
 
 
-        {/* 🟠 Weekly Challenge – מעוצב */}
-    <div className="profile-card profile-challenge">
-      <h2 className="profile-title"># Weekly challenge</h2>
-      <div className="challenge-box">
-        <p className="challenge-text">3 5 km runs this week</p>
-        <p className="challenge-date">Defined on: 30.6.2025</p>
+      <div className="profile-card profile-challenge">
+        <h2 className="profile-title"># Training Goal</h2>
+        <div className="challenge-box">
+          <label htmlFor="goalType" className="goal-label">
+            Choose your goal:
+          </label>
+            <select
+              id="goalType"
+              className="goalT-select"
+              value={trainingGoalType}
+              onChange={(e) => setTrainingGoalType(e.target.value)}
+            >
+              <option value="general">General Fitness</option>
+              <option value="5k">5K Race</option>
+              <option value="10k">10K Race</option>
+              <option value="half-marathon">Half Marathon</option>
+              <option value="marathon">Marathon</option>
+            </select>
 
-        <div className="challenge-buttons">
-          <button className="challenge-btn">Update challenge</button>
-          <button className="challenge-btn">
-            <img src="/ai-icon.png" alt="AI" />
-            Automatic challenge
-          </button>
+            <button className="challenge-btn" onClick={handleSaveTrainingGoal}>
+              Save Goal
+            </button>
         </div>
       </div>
-    </div>
+
 
 
     <div className="profile-card profile-aggregate">
