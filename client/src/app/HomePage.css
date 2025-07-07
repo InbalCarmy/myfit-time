@@ -71,13 +71,15 @@ body {
   background-color: rgba(242, 242, 242, 0.1);
   color: #F2F2F2;
   font-family: 'Nunito', sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 36px;
   padding: 12px 32px;
-  border-radius: 20px;
+  border-radius: 1rem;
   border: none;
   cursor: pointer;
-    gap: 0.6rem;
+  gap: 1.5rem;
+  font-style: italic;
+
 
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: background-color 0.3s ease;

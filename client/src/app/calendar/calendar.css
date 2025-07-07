@@ -88,7 +88,7 @@ html, body {
   color: rgba(255,255,255,0.85);
 }
 
-.find-time-btn {
+.find-time-btn.calendar-btn {
   background-color:rgba(120, 84, 52, 0.3);
   border: none;
   border-radius: 1rem;
@@ -107,7 +107,7 @@ html, body {
   margin-top: 0.3rem;
 }
 
-.find-time-btn:hover {
+.find-time-btn.calendar-btn:hover {
   background-color: rgba(120, 84, 52, 0.6);
 }
 
@@ -415,7 +415,7 @@ html, body {
     padding: 0.8rem;
   }
 
-  .find-time-btn {
+ .find-time-btn.calendar-btn {
     font-size: 0.9rem;
     padding: 0.6rem 1.2rem;
   }

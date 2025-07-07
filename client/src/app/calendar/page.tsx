@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import './calendar.css';
 import PlanWorkoutModal from '@/components/PlanWorkoutModal';
-import { collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, deleteDoc, getDoc, doc } from 'firebase/firestore';
 import { db, auth } from '@/firebase/firebaseConfig';
 import { startOfWeek, endOfWeek, addWeeks, subWeeks, format } from 'date-fns';
 import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered } from '@/utils/googleCalendar';
@@ -48,6 +48,23 @@ const CalendarPage = () => {
   const [freeTimeSlots, setFreeTimeSlots] = useState<{ start: Date; end: Date }[]>([]);
   const [defaultTime, setDefaultTime] = useState<string | null>(null);
   const [currentWeek, setCurrentWeek] = useState(new Date());
+  const [preferredTime, setPreferredTime] = useState('morning');
+  interface UserData {
+  name?: string;
+  email?: string;
+  photoURL?: string;
+  weeklyGoal?: {
+    type: string;
+    value: number;
+  };
+  weeklyChallenge?: any;
+  preferredTime?: 'morning' | 'afternoon' | 'evening';
+  reminderEnabled?: boolean;
+}
+
+const [userData, setUserData] = useState<UserData | null>(null);
+
+
 
   const handleOpenModal = (date: string, time?: string) => {
     setSelectedDate(date);
@@ -128,27 +145,39 @@ const CalendarPage = () => {
       const events = await fetchGoogleCalendarEvents(token);
       setCalendarEvents(events);
       const existingWorkoutDates = Object.keys(workouts);
-      const freeSlots = getFreeTimeSlotsFiltered(events, existingWorkoutDates);
+      // const freeSlots = getFreeTimeSlotsFiltered(events, existingWorkoutDates);
+      const freeSlots = getFreeTimeSlotsFiltered(events, existingWorkoutDates, preferredTime as 'morning' | 'afternoon' | 'evening');
+
       setFreeTimeSlots(freeSlots);
     } catch (error) {
       console.error('❌ Failed to fetch calendar data:', error);
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        setUserId(user.uid);
-        fetchWorkouts(user.uid, currentWeek);
-      } else {
-        setUserId(null);
-        setWorkouts({});
-      }
-    });
-      console.log('🗓 ימות השבוע שנשלפו:', getWeekDates(currentWeek).map(d => format(new Date(d), 'EEEE')));
+useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      setUserId(user.uid);
+      fetchWorkouts(user.uid, currentWeek);
 
-    return () => unsubscribe();
-  }, [currentWeek]);
+      // 🔄 שליפת preferredTime מ־Firestore
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        setPreferredTime(userData.preferredTime || 'morning');
+      }
+    } else {
+      setUserId(null);
+      setWorkouts({});
+    }
+
+    console.log('🗓 ימות השבוע שנשלפו:', getWeekDates(currentWeek).map(d => format(new Date(d), 'EEEE')));
+  });
+
+  return () => unsubscribe();
+}, [currentWeek]);
+
 
   const handlePrevWeek = () => setCurrentWeek(prev => subWeeks(prev, 1));
   const handleNextWeek = () => setCurrentWeek(prev => addWeeks(prev, 1));
@@ -211,7 +240,7 @@ const CalendarPage = () => {
 
       <div className="line-divider"></div>
 
-      <button className="find-time-btn" onClick={handleGoogleCalendarAuth}>
+      <button className="find-time-btn calendar-btn" onClick={handleGoogleCalendarAuth}>
         <img src="/clock.png" alt="clock" className="btn-icon" />
         Find time for a workout
       </button>

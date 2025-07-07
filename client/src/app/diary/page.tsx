@@ -12,23 +12,19 @@ const parseDurationToMinutes = (duration: string): number => {
 
   const parts = duration.split(':').map(Number);
 
-  if (parts.length === 3) {
-    const [hours, minutes, seconds] = parts;
-    if ([hours, minutes, seconds].some(isNaN)) return NaN;
-    return hours * 60 + minutes + seconds / 60;
-  } else if (parts.length === 2) {
-    const [minutes, seconds] = parts;
-    if ([minutes, seconds].some(isNaN)) return NaN;
-    return minutes + seconds / 60;
-  }
+  if (parts.length !== 3 || parts.some(isNaN)) return NaN;
 
-  return NaN;
+  const [hours, minutes, seconds] = parts;
+  return hours * 60 + minutes + seconds / 60;
 };
+
 
 
 export default function DiaryPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tooltip, setTooltip] = useState('');
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
 
 
   const formattedDate = selectedDate.toLocaleDateString('en-GB', {
@@ -189,7 +185,33 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   setTooltip(labels[index as keyof typeof labels] || '');
 };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+//   const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+//   const user = auth.currentUser;
+//   if (!user) {
+//     alert('You must be logged in to save your workout.');
+//     return;
+//   }
+
+//   try {
+//     const formattedPace = formData.pace;
+
+//     await addDoc(collection(db, 'workouts'), {
+//       ...formData,
+//       pace: formattedPace, // ← שמור בפורמט טקסט
+//       date: selectedDate.toISOString().split('T')[0],
+//       userId: user.uid,
+//       userEmail: user.email,
+//       status: 'completed',
+//       createdAt: Timestamp.now(),
+//     });
+
+//     console.log('Workout saved!');
+//   } catch (error) {
+//     console.error('Error saving workout:', error);
+//   }
+// };
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   const user = auth.currentUser;
   if (!user) {
@@ -211,6 +233,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
     });
 
     console.log('Workout saved!');
+    setSaveSuccess(true); // ← מציג את הודעת ה-Saved
+    setTimeout(() => setSaveSuccess(false), 2000); // ← נעלם אחרי 2 שניות
+
   } catch (error) {
     console.error('Error saving workout:', error);
   }
@@ -233,16 +258,17 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
         <div className="input-row">
           <label>Duration:</label>
-          <input
-            type="text"
-            name="duration"
-            placeholder="HH:MM:SS or MM:SS"
-            pattern="^(\d{1,2}:\d{2}|\d{1,2}:\d{2}:\d{2})$"
-            title="Please enter duration in MM:SS or HH:MM:SS format"
-            value={formData.duration}
-            onChange={handleChange}
-            required
-          />
+            <input
+              type="text"
+              name="duration"
+              placeholder="HH:MM:SS (e.g. 00:45:00)"
+              pattern="^\d{2}:\d{2}:\d{2}$"
+              title="Please enter duration in HH:MM:SS format"
+              value={formData.duration}
+              onChange={handleChange}
+              required
+            />
+
 
           <label>Calories:</label>
           <input type="number" name="calories" value={formData.calories} onChange={handleChange} />
@@ -257,9 +283,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
     <div className="run-type">
       <label>Running type:</label>
-      <div className="run-buttons">
-        <button
-          type="button"
+      {/* <div className="run-buttons">
+        <button type="button"
           className={formData.runType === 'Easy' ? 'selected' : ''}
           onClick={() => handleRunType('Easy')}
         >
@@ -272,7 +297,20 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
         >
           Intervals
         </button>
-      </div>
+      </div> */}
+          <div className="run-buttons">
+            {['Easy', 'Intervals', 'Tempo', 'Long Run', 'Recovery'].map(type => (
+              <button
+                key={type}
+                type="button"
+                className={formData.runType === type ? 'selected' : ''}
+                onClick={() => handleRunType(type)}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+
     </div>
 
 
@@ -293,17 +331,48 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
         <div className="time-of-day">
           <label>Time of Day:</label>
-          <div className="icons">
+          {/* <div className="icons">
             <button type="button" onClick={() => selectTimeOfDay('morning')} className={formData.timeOfDay === 'morning' ? 'selected' : ''}>🌅</button>
             <button type="button" onClick={() => selectTimeOfDay('noon')} className={formData.timeOfDay === 'noon' ? 'selected' : ''}>🌤️</button>
             <button type="button" onClick={() => selectTimeOfDay('night')} className={formData.timeOfDay === 'night' ? 'selected' : ''}>🌙</button>
+          </div> */}
+          <div className="icons">
+            <button
+              type="button"
+              onClick={() => selectTimeOfDay('morning')}
+              className={formData.timeOfDay === 'morning' ? 'selected' : ''}
+            >
+              <img src="/sun-icon.png" alt="morning" className="icon-img" />
+            </button>
+            <button
+              type="button"
+              onClick={() => selectTimeOfDay('noon')}
+              className={formData.timeOfDay === 'noon' ? 'selected' : ''}
+            >
+              <img src="/sunrise-icon.png" alt="noon" className="icon-img" />
+            </button>
+            <button
+              type="button"
+              onClick={() => selectTimeOfDay('night')}
+              className={formData.timeOfDay === 'night' ? 'selected' : ''}
+            >
+              <img src="/moon-icon.png" alt="night" className="icon-img" />
+            </button>
           </div>
+
         </div>
 
         <label>Personal Notes:</label>
         <textarea name="notes" value={formData.notes} onChange={handleChange} rows={3} />
 
         <button type="submit" className="submit-btn">Save Workout</button>
+        {saveSuccess && (
+        <div className="save-confirmation">
+          <img src="/check.png" alt="Saved" className="checkmark-icon" />
+          <span>Saved!</span>
+        </div>
+      )}
+
         {/* חצים */}
         <div className="navigation-arrows">
           <button type="button" onClick={() => changeDate(-1)} className="arrow-btn left-arrow">

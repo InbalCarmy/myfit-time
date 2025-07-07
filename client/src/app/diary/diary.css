@@ -250,6 +250,29 @@ textarea:focus {
 .submit-btn:hover {
   background-color: rgba(255, 255, 255, 0.6);
 }
+.save-confirmation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4caf50;
+  font-weight: 600;
+  margin-top: 12px;
+  gap: 8px;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+.checkmark-icon {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-5px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-5px); }
+}
+
 
 
 
@@ -287,6 +310,39 @@ textarea:focus {
 .diary-form {
   position: relative;
 }
+
+.icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.icons button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  border-radius: 50%;
+}
+
+.icons button:hover {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.icons .selected {
+  border: 2px solid white;
+  border-radius: 50%;
+  transform: scale(1.1);
+}
+
+.icon-img {
+  width: 24px;
+  height: 24px;
+}
+
 
 /* 📱 מסכים קטנים */
 @media (max-width: 768px) {

@@ -16,7 +16,8 @@
     "baseUrl": ".",                          // ✅ נדרש כדי ש־paths יעבוד
     "paths": {
       "@/*": ["src/*"],
-       "@server/*": ["server/*"]                // ✅ תואם למבנה שלך: client/src/
+       "@server/*": ["server/*"] ,               // ✅ תואם למבנה שלך: client/src/
+       "@types": ["client/types"]
     },
     "plugins": [
       {

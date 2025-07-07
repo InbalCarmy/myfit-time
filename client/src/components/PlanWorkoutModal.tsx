@@ -104,6 +104,7 @@ const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, defaultTime =
           <option>Intervals</option>
           <option>Long Run</option>
           <option>Tempo</option>
+          <option>Recovery</option>
         </select>
 
         <label>Time:</label>

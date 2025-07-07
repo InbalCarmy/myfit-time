@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useEffect, useState } from 'react';
 import './dashboard.css';
@@ -7,8 +6,8 @@ import { collection, getDocs, query, where, orderBy, limit, doc, getDoc} from 'f
 import { db, auth } from '@/firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { calculateWeeklyProgress, RunEntry, WeeklyGoal } from '@/utils/calculateWeeklyProgress';
-import {ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered,} from '@/utils/googleCalendar';
-
+import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered, } from '@/utils/googleCalendar';
+import Link from 'next/link';
 
 
 export default function Dashboard() {
@@ -21,8 +20,21 @@ export default function Dashboard() {
   const [progressPercent, setProgressPercent] = useState(0);
   const [goalText, setGoalText] = useState('');   
   const [freeTimeSlots, setFreeTimeSlots] = useState<{ start: Date; end: Date }[]>([]);
+  const [preferredTime, setPreferredTime] = useState('morning');
+  interface UserData {
+  name?: string;
+  email?: string;
+  photoURL?: string;
+  weeklyGoal?: {
+    type: string;
+    value: number;
+  };
+  weeklyChallenge?: any;
+  preferredTime?: 'morning' | 'afternoon' | 'evening';
+  reminderEnabled?: boolean;
+}
 
-  
+const [userData, setUserData] = useState<UserData | null>(null);
   const handleFindTime = async () => {
     const token = await ensureGoogleCalendarAccess();
     if (!token) return;
@@ -40,7 +52,7 @@ export default function Dashboard() {
       return workoutDate.toISOString().split('T')[0];
     });
 
-    const suggestions = getFreeTimeSlotsFiltered(events, workoutDates);
+    const suggestions = getFreeTimeSlotsFiltered(events, workoutDates, preferredTime as 'morning' | 'afternoon' | 'evening' );
     setFreeTimeSlots(suggestions);
   };
 
@@ -172,6 +184,8 @@ useEffect(() => {
 
         setGoalText(label);
       }
+        setPreferredTime(userData.preferredTime || 'morning');
+
     }
 
   // שליפת כל האימונים המתוכננים מהעתיד
@@ -233,7 +247,7 @@ useEffect(() => {
 
       <section className="dashboard-grid">
         <div className="weekly-running">
-          <h3>This week running</h3>
+          <h3>This Week Running</h3>
 
           <div className="row">
             <div className="stats">
@@ -247,148 +261,76 @@ useEffect(() => {
               <div key={index} className={`dot ${status}`}></div>
             ))}
           </div>
-
         </div>
-{/* <div className="next-workout card">
-  <h4>Your Next Workout</h4>
-
-  {nextWorkout ? (
-    <>
-      <p>
-        {new Date(nextWorkout.date).toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'long',
-          day: 'numeric',
-        })} | {nextWorkout.time}
-      </p>
-      <p>| {nextWorkout.type}</p>
-    </>
-  ) : (
-    <div className="no-next-workout">
-      <p>We couldn't find a planned workout – here's when you might fit one in:</p>
-      <button className="find-time-btn" onClick={handleFindTime}>
-        <img src="/clock.png" alt="clock" className="btn-icon" />
-        Find time for a workout
-      </button>
-
-      {freeTimeSlots.length > 0 && (
-        <div className="suggested-section">
-          <p className="suggested-title">
-            <img src="/calendar.png" alt="calendar icon" className="suggested-icon" />
-            Suggested slots:
-          </p>
-          <div className="suggested-boxes">
-            {freeTimeSlots.map((slot, i) => {
-              const start = new Date(slot.start);
-              const timeRange = `${start.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })} - ${new Date(slot.end).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}`;
-              return (
-                <div key={i} className="suggested-slot">
-                  <span>
-                    • {start.toLocaleDateString('en-US', { weekday: 'short' })} • {timeRange}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  )}
-</div> */}
         
         <div className="next-workout card">
-  <h4>Your Next Workout</h4>
-  {nextWorkout ? (
-    <>
-      <p>
-        {new Date(nextWorkout.date).toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'long',
-          day: 'numeric',
-        })} | {nextWorkout.time}
-      </p>
-      <p>| {nextWorkout.type}</p>
-    </>
-  ) : (
-    <div className="dashboard-suggestions">
-      <p>Free to train? Try these times:</p>
-      <button className="find-time-btn" onClick={handleFindTime}>
-        <img src="/clock.png" alt="clock" className="btn-icon" />
-        Find time for a workout
-      </button>
+          <h4>Your Next Workout</h4>
+          {nextWorkout ? (
+            <>
+              <p>
+                {new Date(nextWorkout.date).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  month: 'long',
+                  day: 'numeric',
+                })} | {nextWorkout.time}
+              </p>
+              <p>| {nextWorkout.type}</p>
+            </>
+          ) : (
+            <div className="dashboard-suggestions">
+              <p>Free to train? Try these times:</p>
+              <button className="find-time-btn dashboard-btn" onClick={handleFindTime}>
+                <img src="/blue-clock.png" alt="clock" className="btn-icon" />
+                Find time for a workout
+              </button>
 
-      {freeTimeSlots.length > 0 && (
-        <div className="suggested-section">
-          <p className="suggested-title">
-            <img src="/calendar.png" alt="calendar icon" className="suggested-icon" />
-            Suggested slots:
-          </p>
-          <div className="suggested-boxes">
-            {freeTimeSlots.map((slot, i) => {
-              const start = new Date(slot.start);
-              const timeRange = `${start.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })} - ${new Date(slot.end).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}`;
-              return (
-                <div key={i} className="suggested-slot">
-                  • {start.toLocaleDateString('en-US', { weekday: 'short' })} • {timeRange}
+              {freeTimeSlots.length > 0 && (
+                <div className="suggested-section">
+                  <p className="suggested-title dashboard-suggested">
+                    <img src="/blue-calendar.png" alt="calendar icon" className="suggested-icon dashboard-icon" />
+                    Suggested slots:
+                  </p>
+                  <div className="suggested-boxes">
+                    {freeTimeSlots.map((slot, i) => {
+                      const start = new Date(slot.start);
+                      const timeRange = `${start.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })} - ${new Date(slot.end).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}`;
+                      return (
+                        <div key={i} className="suggested-slot">
+                          • {start.toLocaleDateString('en-US', { weekday: 'short' })} • {timeRange}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+              )}
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  )}
-</div>
 
-
-
-        {/* <div className="weekly-goal card">
-          <h4>Your weekly goal</h4>
-          <div className="circle-goal">
-            <svg width="130" height="130" viewBox="0 0 40 40" className="progress-ring">
-              <path
-                className="progress-bg"
-                d="M18 2.0845
-                  a 15.9155 15.9155 0 0 1 0 31.831
-                  a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke="#eeeeee"
-                strokeWidth="5"
-              />
-              <path
-                className="progress-bar"
-                d="M18 2.0845
-                  a 15.9155 15.9155 0 0 1 0 31.831
-                  a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none"
-                stroke="#4e7077"
-                strokeWidth="5"
-                strokeDasharray="75, 100"
-              />
-            </svg>
-            <div className="goal-label">15 km</div>
+          <div className="smart-plan card">
+            <div className="smart-plan-header">
+              <img src="/ai-icon.png" alt="Smart Plan Icon" className="smart-plan-icon" />
+              <h4 className="smart-plan-title">Smart Plan</h4>
+            </div>
+            <button className="smart-plan-btn" onClick={() => router.push('/smart-plan')}>
+              Generate Smart Plan
+            </button>
           </div>
-        </div> */}
+
         <div className="weekly-goal card">
-          <h4>Your weekly goal</h4>
+          <h4>Your Weekly Goal</h4>
           <div className="circle-goal">
             <svg width="130" height="130" viewBox="0 0 40 40" className="progress-ring">
               <path
                 className="progress-bg"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                fill="none" stroke="#eeeeee" strokeWidth="5"
+                fill="none" stroke="#fff" strokeWidth="5"
               />
               <path
                 className="progress-bar"
@@ -402,7 +344,7 @@ useEffect(() => {
         </div>
 
 
-        <div className="challenge card">
+        {/* <div className="challenge card">
           <div className="card-header">
             <img src="/challenge-icon.png" alt="Challenge Icon" className="challenge-icon" />
             <h4>Challenge of the week</h4>
@@ -414,7 +356,17 @@ useEffect(() => {
             <span className="pill">Run 2</span>
             <span className="pill-qlock">⏱</span>
           </div>
-        </div>
+        </div> */}
+                {/* new Smart Plan card */}
+          {/* <div className="smart-plan card">
+            <div className="smart-plan-header">
+              <img src="/ai-icon.png" alt="Smart Plan Icon" className="smart-plan-icon" />
+              <h4 className="smart-plan-title">Smart Plan</h4>
+            </div>
+            <button className="smart-plan-btn" onClick={() => router.push('/smart-plan')}>
+              Generate Smart Plan
+            </button>
+          </div> */}
       </section>
 
       <nav className="side-nav">
@@ -424,8 +376,8 @@ useEffect(() => {
         <button onClick={() => router.push('/calendar')} className="nav-btn">
           <img src="/calendar.png" alt="Calendar" />
         </button>
-        <button onClick={() => router.push('/insights')} className="nav-btn">
-          <img src="/insights.png" alt="Insights" />
+        <button onClick={() => router.push('/smart-plan')} className="nav-btn">
+          <img src="/ai-icon-white.png" alt="ai" />
         </button>
         <button onClick={() => router.push('/profile')} className="nav-btn">
           <img src="/profile.png" alt="Profile" />
