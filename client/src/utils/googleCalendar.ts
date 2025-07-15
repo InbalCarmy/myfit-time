@@ -2,6 +2,7 @@ import axios from 'axios';
 import { isSameDay, isWithinInterval, startOfDay, endOfDay, startOfWeek, endOfWeek, format } from 'date-fns';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
+// import { CalendarEvent } from './types';
 
 
 export const ensureGoogleCalendarAccess = async (): Promise<string | null> => {
@@ -215,3 +216,74 @@ export const getFreeTimeSlotsFiltered = (
   return freeSlots;
 };
 
+
+export const getFreeTimeSlotsUntilTargetDate = (
+  events: CalendarEvent[],
+  existingWorkoutDates: string[],
+  preferredTime: 'morning' | 'afternoon' | 'evening' = 'morning',
+  targetDate: Date
+) => {
+  console.log("📅 Target date received:", targetDate);
+  const now = new Date();
+  const today = startOfDay(now);
+  const endDate = new Date(targetDate);
+
+  let earliest = 8;
+  let latest = 22;
+
+  if (preferredTime === 'morning') {
+    earliest = 7;
+    latest = 12;
+  } else if (preferredTime === 'afternoon') {
+    earliest = 12;
+    latest = 17;
+  } else if (preferredTime === 'evening') {
+    earliest = 17;
+    latest = 21;
+  }
+
+  const sortedEvents = [...events]
+    .filter(e => e.start?.dateTime && e.end?.dateTime)
+    .map(e => ({
+      start: new Date(e.start.dateTime),
+      end: new Date(e.end.dateTime),
+    }))
+    .sort((a, b) => a.start.getTime() - b.start.getTime());
+
+  const freeSlots: { start: Date; end: Date }[] = [];
+
+  for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
+    const dateStr = format(d, 'yyyy-MM-dd');
+    if (existingWorkoutDates.includes(dateStr)) continue;
+
+    const dayStart = new Date(d);
+    const dayEnd = endOfDay(dayStart);
+
+    let currentHour = isSameDay(d, now)
+      ? Math.max(now.getHours() + 1, earliest)
+      : earliest;
+
+    while (currentHour < latest) {
+      const slotStart = new Date(dayStart);
+      slotStart.setHours(currentHour, 0, 0, 0);
+
+      const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
+
+      const hasConflict = sortedEvents.some(event =>
+        isWithinInterval(slotStart, { start: event.start, end: event.end }) ||
+        isWithinInterval(slotEnd, { start: event.start, end: event.end }) ||
+        (event.start <= slotStart && event.end >= slotEnd)
+      );
+
+      if (!hasConflict && slotEnd <= dayEnd) {
+        freeSlots.push({ start: slotStart, end: slotEnd });
+        break;
+      }
+
+      currentHour++;
+    }
+  }
+
+  console.log('🎯 כל ההצעות לשעה פנויה עד התאריך:', freeSlots);
+  return freeSlots;
+};

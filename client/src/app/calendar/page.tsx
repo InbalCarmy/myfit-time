@@ -8,14 +8,6 @@ import { db, auth } from '@/firebase/firebaseConfig';
 import { startOfWeek, endOfWeek, addWeeks, subWeeks, format } from 'date-fns';
 import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered } from '@/utils/googleCalendar';
 
-// const getWeekDates = (baseDate: Date): string[] => {
-//   const sunday = startOfWeek(baseDate, { weekStartsOn: 0 });
-//   return Array.from({ length: 7 }, (_, i) => {
-//     const d = new Date(sunday);
-//     d.setDate(sunday.getDate() + i);
-//     return d.toISOString().split('T')[0];
-//   });
-// };
 const getWeekDates = (baseDate: Date): string[] => {
   const date = new Date(baseDate);
   const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday

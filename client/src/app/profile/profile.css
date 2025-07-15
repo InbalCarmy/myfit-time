@@ -19,6 +19,9 @@ html, body {
   box-sizing: border-box;
 }
 
+
+
+
 .profile-header {
   width: 100%;
   max-width: 1000px;
@@ -157,6 +160,8 @@ html, body {
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
   font-weight: 400;
+  margin-bottom: 1rem;
+
 }
 
 .goal-box {
@@ -174,6 +179,13 @@ html, body {
   color: #718F96;
 }
 
+.label-weekly-goal-distance {
+  color: #718F96;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  position: static;
+}
 
 .goal-input-row {
   display: flex;
@@ -214,7 +226,7 @@ html, body {
     margin-bottom: 1rem;
 
 }
-.goal-select {
+/* .goal-select {
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 0.8rem;
   padding: 0.4rem 1rem;
@@ -229,7 +241,8 @@ html, body {
   max-width: 300px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   gap:1rem;
-}
+} */
+
 .goal-save-btn:hover {
   background-color: rgba(137, 159, 159, 0.8);
 }
@@ -310,17 +323,63 @@ html, body {
   font-style: italic;
   font-size: 0.95rem;
 }
-
-
-.prefs-checkbox-row {
+.prefs-workouts-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.prefs-workouts-row label {
   font-family: 'Overlock', cursive;
+  font-style: italic;
   font-size: 1rem;
   color: #718F96;
-  white-space: nowrap; /* 💡 מונע ירידת שורה */
+  margin-right: 0.5rem;
+  white-space: nowrap;
 }
+
+.prefs-workouts-row input {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #718F96;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  border: none;
+  width: 120px;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.prefs-workouts-row input::placeholder {
+  color: #a0b4b8;
+  opacity: 0.8;
+}
+
+.prefs-workouts-row button {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #718F96;
+  font-family: 'Overlock', cursive;
+  font-style: italic;
+  font-size: 1rem;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.prefs-workouts-row button:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+
 
 .challenge-box{
   background-color: rgba(255, 255, 255, 0.25);
@@ -330,14 +389,27 @@ html, body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 400px;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.label-goal-type {
+  color: #718F96;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  position: static;
 }
 
-.goal-label {
+.label-target-date {
   color: #718F96;
-  font-weight: 500;
-  margin-bottom: 0.4rem;
   font-size: 1rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  position: static;
 }
+
+
+
 
 .goalT-select {
   background-color: rgba(255, 255, 255, 0.6);
@@ -359,7 +431,9 @@ html, body {
   color:#718F96;
   background-color: rgba(255, 255, 255, 0.4);
 }
-
+.target-date-box {
+  margin-top: 0.8rem;
+}
 
 .aggregate {
   grid-area: aggregate;

@@ -43,24 +43,25 @@ body {
 @tailwind components;
 @tailwind utilities;
 
-/* פונט גלובלי */
+/* Global font */
 html {
   @apply font-nunito;
 }
 
-/* רקע כללי */
+/* Global background */
 .global-bg {
   background: url('/running-bg.jpg') no-repeat center center / cover;
   min-height: 100vh;
   min-width: 100vw;
-  background-attachment: fixed; /* אופציונלי */
-
+  background-attachment: fixed;
 }
 
-/* משתנים */
+/* Variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-roboto-mono);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -17,8 +17,8 @@ export default function ProfilePage() {
   const [totalTime, setTotalTime] = useState<string>('');
   const [overallPace, setOverallPace] = useState('');
   const [trainingGoalType, setTrainingGoalType] = useState("general");
-
-  
+  const [targetDate, setTargetDate] = useState('');
+  const [preferredWorkoutsPerWeek, setPreferredWorkoutsPerWeek] = useState<number | null>(null);
 
   interface UserData {
   name?: string;
@@ -67,8 +67,10 @@ const handleSaveTrainingGoal = async () => {
   try {
     const userRef = doc(db, 'users', user.uid);
     await updateDoc(userRef, {
-      trainingGoal: trainingGoalType, // ← שימי לב שצריך סטייט נפרד!
-    });
+      trainingGoal: trainingGoalType === "general"
+        ? { type: trainingGoalType }
+        : { type: trainingGoalType, targetDate },     
+          });
     alert('Training goal saved!');
   } catch (err) {
     console.error('Failed to save training goal:', err);
@@ -83,10 +85,10 @@ const handleSaveWeeklyGoal = async () => {
   try {
     const userRef = doc(db, 'users', user.uid);
     await updateDoc(userRef, {
-      weeklyGoal: {
-        type: goalType,
-        value: goalValue,
-      },
+    weeklyGoal: {
+      type: 'distance', // 🟢 תמיד "distance"
+      value: goalValue,
+    },
       trainingGoal: goalType, // 🟢 שדה נוסף ל-trainingGoal
     });
     alert('Goal saved!');
@@ -107,9 +109,24 @@ const handleSaveWeeklyGoal = async () => {
       const docRef = doc(db, 'users', user.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setUserData(docSnap.data());
+        const data = docSnap.data();
+        setUserData(data);
+        console.log('📦 userData loaded:', data);
+
+        // ✅ הוספה: טעינת trainingGoal
+        if (data.trainingGoal) {
+          setTrainingGoalType(data.trainingGoal.type || 'general');
+          if (data.trainingGoal.targetDate) {
+            setTargetDate(data.trainingGoal.targetDate);
+          } else {
+            setTargetDate('');
+          }
+        }
+
+        if (data.preferredWorkoutsPerWeek !== undefined) {
+          setPreferredWorkoutsPerWeek(data.preferredWorkoutsPerWeek);
+        }
       }
-      console.log('📦 userData loaded:', docSnap.data());
 
 
       // חישוב מרחק שבועי
@@ -205,6 +222,22 @@ const handleSaveWeeklyGoal = async () => {
     reminderEnabled
   } = userData;
 
+    const handleSavePreferredWorkouts = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        preferredWorkoutsPerWeek,
+      });
+      alert('Preferred weekly workouts saved!');
+    } catch (err) {
+      console.error('❌ Failed to save preferred workouts:', err);
+    }
+  };
+
+
   return (
     <div className="profile-container">
       <div className="profile-header">
@@ -228,15 +261,7 @@ const handleSaveWeeklyGoal = async () => {
 
           <div className="goal-box">
             <div className="goal-input-row">
-              <select
-                value={goalType}
-                onChange={(e) => setGoalType(e.target.value)}
-                className="goal-select"
-              >
-                <option value="distance">Distance (km)</option>
-                <option value="workouts">Number of workouts</option>
-                <option value="time">Total minutes</option>
-              </select>
+              <span className="label-weekly-goal-distance">Distance (km)</span>
 
               <input
                 type="number"
@@ -250,17 +275,12 @@ const handleSaveWeeklyGoal = async () => {
                 Save
               </button>
             </div>
-
-            {userData.weeklyGoal && (
-              <p className="goal-achieved-text">
-                Goal set: {userData.weeklyGoal.value}{" "}
-                {goalType === "distance"
-                  ? "km"
-                  : goalType === "time"
-                  ? "minutes"
-                  : "workouts"}
-              </p>
+              {userData.weeklyGoal && (
+                <p className="goal-achieved-text">
+                  Goal set: {userData.weeklyGoal.value} km
+                </p>
               )}
+
               <p className="goal-progress-text">
                 Progress this week: {weeklyDistance.toFixed(1)} km
               </p>
@@ -269,8 +289,6 @@ const handleSaveWeeklyGoal = async () => {
         </div>
       </div>
 
-        
-
         {/* 🟢 preferences – בעיצוב חדש */}
     <div className="profile-card profile-prefs">
       <div className="profile-section prefs">
@@ -278,8 +296,6 @@ const handleSaveWeeklyGoal = async () => {
 
         <div className="prefs-inner-box">
           <div className="prefs-checkbox-row">
-            <input type="checkbox" checked={reminderEnabled} readOnly />
-            <span className="checkbox-text">Get reminders</span>
           </div>
         <div className="prefs-time-row">
           <span className="prefs-label">
@@ -303,10 +319,28 @@ const handleSaveWeeklyGoal = async () => {
                 className={userData?.preferredTime === 'evening' ? 'selected-time' : ''}
                 onClick={() => handleTimePreference('evening')}
               />
-
             </span>
           </span>
         </div>
+
+        <div className="prefs-workouts-row">
+          <label htmlFor="preferredWorkouts" className="prefs-label">
+            Workouts per week:
+          </label>
+          <input
+            id="preferredWorkouts"
+            type="number"
+            min={0}
+            className="goal-input"
+            placeholder="e.g. 3"
+            value={preferredWorkoutsPerWeek ?? ''}
+            onChange={(e) => setPreferredWorkoutsPerWeek(Number(e.target.value))}
+          />
+          <button className="goal-save-btn" onClick={handleSavePreferredWorkouts}>
+            Save
+          </button>
+        </div>
+
         </div>
       </div>
       </div>
@@ -315,7 +349,7 @@ const handleSaveWeeklyGoal = async () => {
       <div className="profile-card profile-challenge">
         <h2 className="profile-title"># Training Goal</h2>
         <div className="challenge-box">
-          <label htmlFor="goalType" className="goal-label">
+          <label htmlFor="goalType" className="label-goal-type">
             Choose your goal:
           </label>
             <select
@@ -331,6 +365,20 @@ const handleSaveWeeklyGoal = async () => {
               <option value="marathon">Marathon</option>
             </select>
 
+            {trainingGoalType !== 'general' && (
+            <div className="target-date-box">
+              <label htmlFor="targetDate" className="label-target-date">
+                Target date:
+              </label>
+              <input
+                type="date"
+                id="targetDate"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+                className="goal-input"
+              />
+            </div>
+          )}
             <button className="challenge-btn" onClick={handleSaveTrainingGoal}>
               Save Goal
             </button>
