@@ -232,12 +232,12 @@ textarea:focus {
 
 
 .submit-btn {
-  background-color: rgba(255, 255, 255, 0.3);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #718F96;
   border: none;
   border-radius: 2rem;
   padding: 0.8rem 1.5rem;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
   width: 100%;
   margin-top: 1rem;
@@ -248,7 +248,7 @@ textarea:focus {
 }
 
 .submit-btn:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 .save-confirmation {
   display: flex;

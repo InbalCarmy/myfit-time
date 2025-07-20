@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import './profile.css';
 import { auth, db } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
+import SideNav from '@/components/SideNav'; 
 
 export default function ProfilePage() {
   // const [userData, setUserData] = useState<any>(null);
@@ -406,7 +407,7 @@ const handleSaveWeeklyGoal = async () => {
     <button className="logout-btn" onClick={handleLogout}>
       Logout
     </button>
-
+  <SideNav />
     </div>
   );
 

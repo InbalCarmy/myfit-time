@@ -70,9 +70,10 @@ body, html {
 }
 
 
- .weekly-goal {
-  width: clamp(180px, 18vw, 250px);
-  height: clamp(180px, 18vw, 250px);
+.weekly-goal {
+  width: clamp(180px, 18vw, 260px);
+  height: auto; /* לא נכפה גובה מיותר */
+  max-width: 260px; /* לא יגדל מעבר */
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 16px;
@@ -80,7 +81,10 @@ body, html {
   font-family: 'Overlock', sans-serif;
   color: #718F96;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  justify-self: center; /* שיהיה ממורכז בגריד */
+  place-self: center;
 }
+
 
 
 
@@ -276,12 +280,20 @@ body, html {
   font-size: 20px;
 }
 
-.circle-goal {
+/* .circle-goal {
   display: block;
   width: 130px;
   height: 130px;
   margin: 0 auto;
   margin-top: 50px;
+  position: relative;
+} */
+.circle-goal {
+  display: block;
+  width: 100%;          /* תמיד ממלא את רוחב הכרטיס */
+  max-width: 130px;     /* לא יעבור גודל מסוים */
+  aspect-ratio: 1/1;    /* תמיד ריבוע → נשאר עיגול */
+  margin: 20px auto 0;
   position: relative;
 }
 
@@ -304,7 +316,7 @@ body, html {
   transform: translate(-50%, -50%);
   color: #ffffff;
   font-family: 'Overlock', sans-serif;
-  font-size: 18px;
+  font-size: clamp(14px, 1.2vw, 20px);
   font-weight: 700;
   text-align: center;
 

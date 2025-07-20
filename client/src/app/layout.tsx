@@ -3,6 +3,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Logo from '@/components/Logo';
 
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],

@@ -6,6 +6,8 @@ import { db } from '@/firebase/firebaseConfig'; // או הנתיב שלך לקו
 import { auth } from '@/firebase/firebaseConfig';
 import { useEffect } from 'react';
 import { query, where, getDocs } from 'firebase/firestore';
+import SideNav from '@/components/SideNav'; 
+
 
 const parseDurationToMinutes = (duration: string): number => {
   if (!duration || typeof duration !== 'string') return NaN;
@@ -384,6 +386,8 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
 
       </form>
+        <SideNav />
+
     </main>
   );
 }

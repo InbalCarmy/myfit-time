@@ -8,6 +8,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { calculateWeeklyProgress, RunEntry, WeeklyGoal } from '@/utils/calculateWeeklyProgress';
 import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlotsFiltered, } from '@/utils/googleCalendar';
 import Link from 'next/link';
+import SideNav from '@/components/SideNav'; 
+
 
 
 export default function Dashboard() {
@@ -369,20 +371,8 @@ useEffect(() => {
           </div> */}
       </section>
 
-      <nav className="side-nav">
-        <button onClick={() => router.push('/diary')} className="nav-btn">
-          <img src="/diary.png" alt="Diary" />
-        </button>
-        <button onClick={() => router.push('/calendar')} className="nav-btn">
-          <img src="/calendar.png" alt="Calendar" />
-        </button>
-        <button onClick={() => router.push('/smart-plan')} className="nav-btn">
-          <img src="/ai-icon-white.png" alt="ai" />
-        </button>
-        <button onClick={() => router.push('/profile')} className="nav-btn">
-          <img src="/profile.png" alt="Profile" />
-        </button>
-      </nav>
+        <SideNav />
+
     </main>
   );
 }

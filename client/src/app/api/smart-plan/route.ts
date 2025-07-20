@@ -22,8 +22,6 @@ if (!targetDate || !preferredWorkoutsPerWeek) {
   return NextResponse.json({ error: 'Missing target date or preferred workouts per week' }, { status: 400 });
 }
 
-
-
     const startDate = new Date();
     const endDate = new Date(targetDate);
     const numWeeks = differenceInCalendarWeeks(endDate, startDate) + 1;
@@ -32,109 +30,84 @@ if (!targetDate || !preferredWorkoutsPerWeek) {
     // Sort slots and select up to totalSessions
     const sortedSlots = freeSlots.sort((a: any, b: any) => new Date(a.start).getTime() - new Date(b.start).getTime());
     const selectedSlots = sortedSlots.slice(0, totalSessions);
+    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: `
+    You are an experienced **running coach** who builds smart, progressive training plans for different running goals.
 
-    // const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-    //   // {
-    //   //   role: 'system',
-    //   //   content:
-    //   //   'You are a smart running coach. Your task is to generate a personalized weekly training plan that gradually builds the user\'s running capacity toward their training goal. Use the user\'s workout history and available time slots. Each week must include the number of sessions specified by the user. The plan must be spread evenly from today until the target date. Use a balanced mix of the following workout types: easy run, intervals, tempo run, long run, recovery run. The final workout must be scheduled on the exact target date and must match the training goal (e.g., 21 km for a Half Marathon). Format your response as JSON: { workouts: [{ date, time, distance, type }] }'
-    //   //   // 'You are a smart running coach. Create a full training plan until the target date, including progressively harder workouts based on the user\'s history and availability.Use these workout types to build a balanced plan: - easy run - intervals - tempo run - long run - recovery run - race run .The final workout must match the training goal (e.g., 21 km for Half Marathon). Output JSON format: { workouts: [{ date, time, distance, type }] }',
-    //   // },
-    //   {
-    //     role: 'system',
-    //     content: `You are a smart running coach. Your job is to generate a personalized training plan tailored to the user's goal and schedule.
+    The user will provide:
+    - A running goal: 5K, 10K, Half Marathon (21 km), or Marathon (42 km)
+    - A target race date
+    - Preferred number of workouts per week (e.g. 3–6)
+    - Past workout history (distance and type)
+    - Available free time slots for the next few weeks
 
-    //   The user has defined:
-    //   - A specific training goal (e.g., 10K, half marathon)
-    //   - A target date for completing that goal
-    //   - A preferred number of workouts per week
-    //   - Preferred workout times during the day
-    //   - A history of past workouts
-    //   - A list of available time slots for future workouts
+    Your job is to create a **progressive weekly plan** that prepares the user for their goal safely and effectively.
 
-    //   Your task is to:
-    //   1. Plan a balanced and progressive running program **from today until the target date**.
-    //   2. Respect the user's **preferred time of day**, **past workout history**, and **available time slots**.
-    //   3. Try to include the user's preferred number of workouts per week. If availability is limited, reduce frequency accordingly, while keeping the training effective.
-    //   4. Use a mix of workout types: **easy run, intervals, tempo run, long run, recovery run**.
-    //   5. ✅ The **final workout must be scheduled exactly on the target date** and should be a **race run** that exactly matches the user's training goal (e.g., 21 km for a half marathon).
+    RULES:
+    1. **Adapt the plan to the goal**:
+      - **5K goal** → shorter distances, more speed/interval work.
+      - **10K goal** → moderate distances, mix of tempo & intervals.
+      - **Half Marathon** → gradually increase long runs up to ~18–20 km.
+      - **Marathon** → gradually increase long runs up to ~32–35 km.
+    2. Respect the user's **preferred workouts per week**.
+    3. Each week must include a logical mix of:
+      - Easy runs (recovery pace)
+      - Interval/speed runs
+      - Tempo runs (moderate sustained pace)
+      - Long runs (gradually increasing)
+    4. Long runs should **progressively increase ~5–10% per week**.
+    5. Every 3–4 weeks, include a **cutback week** (reduced volume for recovery).
+    6. The **final workout** must be on the target race date and match the goal:
+      - 5 km race
+      - 10 km race
+      - Half Marathon (21 km)
+      - Marathon (42 km)
+    7. Use the **provided free slots** for the first weeks; after they run out, maintain the same weekday pattern.
 
-    //   The training plan must be returned in this format:
-    //   \`\`\`json
-    //   {
-    //     "workouts": [
-    //       { "date": "YYYY-MM-DD", "time": "HH:mm", "distance": "X km", "type": "Run Type" }
-    //     ]
-    //   }
-    //   \`\`\``
-    //   },
-    //   {
-    // role: 'user',
-    // content: `Goal: ${trainingGoal?.type}
-    // Target date: ${targetDate}
-    // Weekly goal: ${weeklyGoal?.type} – ${weeklyGoal?.value} sessions/week
-    // Total sessions: ${totalSessions}
-    // Past workouts:
-    // ${diaryEntries.map((entry: any) => `${entry.date} – ${entry.distance} km – ${entry.runType || 'Run'}`).join('\n')}
+    DISTANCE GUIDELINES:
+    - Easy Runs: 4–8 km (or 20–40 min)
+    - Interval Runs: 5–8 km (e.g. 6×400m, 4×800m)
+    - Tempo Runs: 6–12 km depending on the goal
+    - Long Runs:
+      - 5K goal → max ~10 km
+      - 10K goal → max ~14–16 km
+      - Half Marathon → max ~18–20 km
+      - Marathon → max ~32–35 km
 
-    // Available time slots:
-    // ${selectedSlots.map((slot: any) => `${format(new Date(slot.start), 'yyyy-MM-dd')} ${format(new Date(slot.start), 'HH:mm')} - ${format(new Date(slot.end), 'HH:mm')}`).join('\n')}
-
-    // Please ensure the final workout is on the target date (${targetDate}) and exactly matches the training goal (e.g., 21 km race run for half marathon).
-    // `,
-
-    //   },
-    // ];
-      const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    Return ONLY JSON in this format:
+    \`\`\`json
     {
-      role: 'system',
-      content: `You are a smart running coach. Your job is to generate a personalized training plan for a user.
-
-  The user has provided:
-  - A running goal (e.g., 10K, half-marathon)
-  - A target date for reaching the goal
-  - Preferred number of workouts per week
-  - A history of past workouts
-  - Preferred time of day for workouts
-  - A list of available time slots for the next few weeks
-
-  Your task is to:
-  1. Plan a progressive and balanced running program **from today until the target date**.
-  2. Use the provided free time slots to set the structure and rhythm for the first weeks.
-  3. After those slots run out, continue the training plan in a similar pattern (same number of workouts per week and similar days/times).
-  4. Use a mix of these run types: **easy run, intervals, tempo run, long run, recovery run**.
-  5. ✅ The **final workout must be on the target date** and should be a **race run** that matches the user's goal exactly (e.g., 21 km for a half marathon).
-
-  Return the training plan in this exact format:
-  \`\`\`json
-  {
-    "workouts": [
-      { "date": "YYYY-MM-DD", "time": "HH:mm", "distance": "X km", "type": "Run Type" }
-    ]
-  }
-  \`\`\``
-    },
-    {
-      role: 'user',
-      content: `Goal: ${trainingGoal?.type}
-  Target date: ${targetDate}
-  Preferred workouts per week: ${preferredWorkoutsPerWeek}
-
-  Past workouts:
-  ${diaryEntries.map((entry: any) => `${entry.date} – ${entry.distance} km – ${entry.runType || 'Run'}`).join('\n')}
-
-  Available time slots for next weeks:
-  ${selectedSlots.slice(0, 28).map((slot: any) =>
-    `${format(new Date(slot.start), 'yyyy-MM-dd')} ${format(new Date(slot.start), 'HH:mm')} - ${format(new Date(slot.end), 'HH:mm')}`
-  ).join('\n')}
-
-  🟩 Please ensure:
-- The training continues weekly until the target date, even if time slots are no longer provided.
-- ⏰ The final workout **must be scheduled exactly on the target date (${targetDate})**, and it must be a **race run** of type "${trainingGoal?.type}" (e.g., 21 km for half marathon).
-- If no free time slots are available for that date, **you must still include the race run anyway.**
-`,
+      "workouts": [
+        { "date": "YYYY-MM-DD", "time": "HH:mm", "distance": "X km", "type": "Run Type" }
+      ]
     }
-  ];
+    \`\`\`
+    `
+      },
+      {
+        role: "user",
+        content: `Goal: ${trainingGoal?.type}  
+    Target date: ${targetDate}  
+    Preferred workouts per week: ${preferredWorkoutsPerWeek}  
+
+    Past workouts:  
+    ${diaryEntries.map((entry: any) => `${entry.date} – ${entry.distance} km – ${entry.runType || 'Run'}`).join('\n')}  
+
+    Available time slots for the next weeks:  
+    ${selectedSlots.slice(0, 28).map((slot: any) =>
+      `${format(new Date(slot.start), 'yyyy-MM-dd')} ${format(new Date(slot.start), 'HH:mm')} - ${format(new Date(slot.end), 'HH:mm')}`
+    ).join('\n')}  
+
+    🟩 Please ensure:
+    - Weekly progression makes sense for **${trainingGoal?.type}**.
+    - Long runs and distances gradually progress toward the race distance.
+    - Include recovery/cutback weeks.
+    - Final run MUST be on ${targetDate} and exactly match the goal (${trainingGoal?.type}).`
+      }
+    ];
+
 
 
     console.log('📤 Sent to GPT:', messages);

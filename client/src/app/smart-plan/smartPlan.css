@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Overlock:ital@1&display=swap');
+
+.smart-plan-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: url('/running-bg.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+   align-items: flex-start; 
+   padding-top: 14vh;
+}
+
+
+.smart-plan-overlay {
+  width: 90%;
+  max-width: 1600px;
+  height: 75vh; /* גובה קבוע כדי שהגרדיאנט יעבוד */
+  border-radius: 1.5rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.5) 0%,  /* יותר אטום למעלה */
+    rgba(255, 255, 255, 0.4) 50%,  /* שקיפות בינונית באמצע */
+    rgba(255, 255, 255, 0.1) 80%, /* כמעט שקוף */
+    rgba(255, 255, 255, 0) 100%    /* שקוף לגמרי בתחתית */
+  );
+  backdrop-filter: blur(4px); /* טשטוש עדין */
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* שהכותרת תהיה למעלה */
+  align-items: center;
+}
+
+
+
+.smart-plan-content {
+  text-align: center;
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.smart-plan-container {
+  border-radius: 1.5rem;
+  padding: 3rem;
+  width: 100%;
+  max-width: 800px;
+  color: #476A6F;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+
+.smart-plan-title {
+  font-family: 'Overlock', cursive !important;
+  font-size: 2rem;
+  color: #718F96;
+  margin-bottom:6rem;
+  margin-top: 1rem;
+  font-style: italic; 
+  font-weight: 700;
+}
+
+.smart-plan-ai-btn {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.smart-plan-ai-btn img {
+  width: 34px; /* קטן יותר */
+  height: 34px;
+}
+
+
+.ai-generate-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.smart-plan-loading {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin-top: 2rem;
+  color: #718F96;
+}
+
+.smart-plan-ready {
+ font-family: 'Overlock', cursive ;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  color: #718F96;
+  text-align: center; 
+  font-style: italic;
+}
+
+.smart-plan-subtitle {
+  font-size: 1.5rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+  color: #718F96;
+  font-family: 'Overlock', cursive ;
+  font-style: italic;
+}
+
+.week-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  margin-bottom: 1rem;
+    color: #718F96;
+  font-size: 1.2rem;
+  font-family: 'Overlock', cursive ;
+  gap: 1rem; 
+}
+/* .week-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+} */
+
+.week-nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+.week-nav-btn img {
+  width: 28px; /* גודל החץ */
+  height: 28px;
+}
+
+.week-nav-btn:hover img {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.week-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.week-header button {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #476A6F;
+  cursor: pointer;
+
+}
+
+/* .smart-plan-week hr {
+  border: none;
+  height: 2px; 
+  background: rgba(255, 255, 255, 0.3);
+  margin: 16px 0; 
+  width: 100%;
+  border-radius: 4px;
+} */
+
+.smart-plan-week hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    rgba(113, 143, 150, 0),      /* שקוף בהתחלה */
+    rgba(113, 143, 150, 0.6),    /* אמצע חזק יותר */
+    rgba(113, 143, 150, 0)       /* שוב שקוף בסוף */
+  );
+    margin: 20px 0;
+}
+
+
+.week-workouts {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  text-align: left;
+  color: #718F96;
+  font-size: 1.4rem;
+  font-family: 'Overlock', cursive ;
+}
+.week-workouts li {
+  margin: 0.4rem 0;
+}
+
+.smart-plan-summary {
+  margin-top: 1.5rem;
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #718F96;
+  font-size: 1.4rem;
+  font-family: 'Overlock', cursive ;
+}
+
+.smart-plan-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.8rem;
+  align-items: flex-end;
+}
+
+.plan-btn {
+  background: rgba(255,255,255,0.6);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-style: italic;
+  color: #476A6F;
+  cursor: pointer;
+  transition: background 0.3s ease;
+      color: #718F96;
+  font-size: 1.2rem;
+  font-family: 'Overlock', cursive ;
+}
+.plan-btn:hover {
+  background: rgba(255,255,255,0.8);
+}

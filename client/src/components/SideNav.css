@@ -1,0 +1,43 @@
+.side-nav {
+  position: fixed;
+  top: 10vh;
+  right: 2vw;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000; 
+}
+
+.nav-btn {
+  width: clamp(70px, 7vw, 100px);
+  height: clamp(70px, 7vw, 100px);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn:hover {
+  background-color: rgba(113, 143, 150, 0.4);
+}
+
+.nav-btn img {
+  width: 50%;
+  height: 50%;
+}
+
+@media (max-width: 900px) {
+  .side-nav {
+    top: auto;
+    bottom: 5vh;
+    right: 50%;
+    transform: translateX(50%);
+    flex-direction: row;
+    gap: 12px;
+  }
+}
