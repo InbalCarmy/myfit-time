@@ -13,10 +13,10 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",                          // ✅ נדרש כדי ש־paths יעבוד
+    "baseUrl": ".",                          // ✅ Required for paths to work
     "paths": {
       "@/*": ["src/*"],
-       "@server/*": ["server/*"] ,               // ✅ תואם למבנה שלך: client/src/
+       "@server/*": ["server/*"] ,               // ✅ Matches your structure: client/src/
        "@types": ["client/types"]
     },
     "plugins": [
