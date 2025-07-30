@@ -33,6 +33,16 @@ html, body {
   padding-bottom: 1rem;
 
 }
+.add-workout,
+.workout-complete,
+.workout-time {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center;  */
+  align-items: center; 
+  height: 100%;          
+  text-align: center;
+}
 
 .day-icon {
   width: 42px;

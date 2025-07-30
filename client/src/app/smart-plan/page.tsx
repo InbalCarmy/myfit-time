@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth, db } from '@/firebase/firebaseConfig';
 import { useRouter } from 'next/navigation';
 import { doc,addDoc, getDoc, collection, getDocs, query, where, orderBy } from 'firebase/firestore';
@@ -8,6 +8,7 @@ import { ensureGoogleCalendarAccess, fetchGoogleCalendarEvents, getFreeTimeSlots
 import { format } from 'date-fns';
 import './smartPlan.css';
 import SideNav from '@/components/SideNav'; 
+import toast from 'react-hot-toast';
 
 
 
@@ -19,7 +20,20 @@ export default function SmartPlanPage() {
   const [smartPlan, setSmartPlan] = useState<any>(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
 
-  
+useEffect(() => {
+  const savedPlan = localStorage.getItem("savedSmartPlan");
+  if (savedPlan) {
+    const parsed = JSON.parse(savedPlan);
+
+    // parsed.plan = כל התוכנית עם האימונים
+    // parsed.userData = המידע של המשתמש (trainingGoal, targetDate וכו')
+
+    setSmartPlan(parsed.plan);
+    setUserData(parsed.userData);
+  }
+}, []);
+
+
 
   const generatePlan = async () => {
     setLoading(true);
@@ -83,6 +97,13 @@ export default function SmartPlanPage() {
     setLoading(false);
   };
 
+  const regeneratePlan = async () => {
+  // מוחקים את הישנה מה-localStorage כדי לא להציג אותה יותר
+  localStorage.removeItem("savedSmartPlan");
+  await generatePlan();
+};
+
+
   // פונקציה לקיבוץ לפי שבועות
 function groupWorkoutsByWeek(workouts: any[]) {
   // קודם כל נמיין את האימונים לפי תאריך מהישן לחדש
@@ -123,6 +144,31 @@ function groupWorkoutsByWeek(workouts: any[]) {
 }
 
 
+// const savePlanToFirestore = async () => {
+//   if (!auth.currentUser) return;
+
+//   try {
+//     const user = auth.currentUser;
+
+//     for (const workout of smartPlan.workouts) {
+//       await addDoc(collection(db, "workouts"), {
+//         userId: user.uid,
+//         date: workout.date,          // התאריך של האימון
+//         time: workout.time,          // השעה שה-AI נתן
+//         type: workout.type,          // סוג האימון
+//         distance: workout.distance,  // המרחק
+//         status: "planned",           // שומר כמתוכנן
+//         createdAt: new Date().toISOString(),
+//       });
+//     }
+
+//     alert("✅ Plan saved successfully! It will now appear in your Calendar.");
+//   } catch (err) {
+//     console.error("Error saving plan:", err);
+//     alert("❌ Failed to save the plan. Try again.");
+//   }
+// };
+
 const savePlanToFirestore = async () => {
   if (!auth.currentUser) return;
 
@@ -132,21 +178,33 @@ const savePlanToFirestore = async () => {
     for (const workout of smartPlan.workouts) {
       await addDoc(collection(db, "workouts"), {
         userId: user.uid,
-        date: workout.date,          // התאריך של האימון
-        time: workout.time,          // השעה שה-AI נתן
-        type: workout.type,          // סוג האימון
-        distance: workout.distance,  // המרחק
-        status: "planned",           // שומר כמתוכנן
+        date: workout.date,
+        time: workout.time,
+        type: workout.type,
+        distance: workout.distance,
+        status: "planned",
         createdAt: new Date().toISOString(),
       });
     }
 
-    alert("✅ Plan saved successfully! It will now appear in your Calendar.");
+    // ✅ כאן נוסיף שמירה ל-localStorage
+    localStorage.setItem("savedSmartPlan", JSON.stringify(smartPlan));
+    // ✅ נשמור גם את התוכנית וגם את userData
+    localStorage.setItem(
+      "savedSmartPlan",
+      JSON.stringify({
+        plan: smartPlan,
+        userData: userData
+      })
+    );
+
+  toast.success("Plan saved successfully! It will now appear in your Calendar.");
   } catch (err) {
     console.error("Error saving plan:", err);
-    alert("❌ Failed to save the plan. Try again.");
+  toast.error("❌ Failed to save the plan. Try again.");
   }
 };
+
 
 const savePlanToGoogleCalendar = async () => {
   try {
@@ -199,10 +257,10 @@ const savePlanToGoogleCalendar = async () => {
       }
     }
 
-    alert("✅ Your plan has been saved to Google Calendar!");
+    toast.success("Your plan has been saved to Google Calendar!");
   } catch (err) {
     console.error("Error saving plan to Google Calendar:", err);
-    alert("❌ Failed to save plan to Google Calendar.");
+    toast.error("❌ Failed to save plan to Google Calendar.");
   }
 };
 
@@ -280,9 +338,10 @@ const groupedByWeek = smartPlan?.workouts
 
                 <ul className="week-workouts">
                   {groupedByWeek[currentWeekIndex].workouts.map((w, idx) => (
-                    <li key={idx}>
-                      • {format(new Date(w.date), 'EEEE')} – {w.type}, {w.distance} km at {w.time}
-                    </li>
+                <li key={idx}>
+                  • {w.date ? format(new Date(w.date), 'EEEE') : 'Unknown Day'} – {w.type || 'N/A'}, {w.distance || '0'} km at {w.time || 'N/A'}
+                </li>
+
                   ))}
                 </ul>
 
@@ -294,8 +353,11 @@ const groupedByWeek = smartPlan?.workouts
                     <strong>Goal:</strong> {userData?.trainingGoal?.type} 
                   </p>
                   <p>
-                    <strong>Race Day:</strong>{' '}
-                    {format(new Date(userData?.trainingGoal?.targetDate), 'MMM d, yyyy')}
+                <strong>Race Day:</strong>{' '}
+                {userData?.trainingGoal?.targetDate
+                  ? format(new Date(userData.trainingGoal.targetDate), 'MMM d, yyyy')
+                  : 'N/A'}
+
                   </p>
                   <p>
                     Total weeks: {groupedByWeek.length} | Total sessions:{' '}
@@ -314,7 +376,7 @@ const groupedByWeek = smartPlan?.workouts
                   <button className="plan-btn" onClick={savePlanToGoogleCalendar}>
                     Save to Google Calendar
                   </button>
-                  <button className="plan-btn" onClick={generatePlan}>
+                  <button className="plan-btn" onClick={regeneratePlan}>
                     Regenerate Plan
                   </button>
                 </div>

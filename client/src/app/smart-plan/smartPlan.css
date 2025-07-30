@@ -14,8 +14,8 @@
 
 
 .smart-plan-overlay {
-  width: 90%;
-  max-width: 1600px;
+  width: calc(90% - 120px); 
+  max-width: 1400px;
   height: 75vh; /* גובה קבוע כדי שהגרדיאנט יעבוד */
   border-radius: 1.5rem;
   background: linear-gradient(
@@ -31,6 +31,7 @@
   flex-direction: column;
   justify-content: flex-start; /* שהכותרת תהיה למעלה */
   align-items: center;
+   margin-right: 120px;
 }
 
 

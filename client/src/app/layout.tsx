@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Logo from '@/components/Logo';
+import { Toaster } from 'react-hot-toast'
+
 
 
 const inter = Inter({
@@ -29,7 +31,11 @@ export default function RootLayout({
       <body className={`global-bg ${inter.variable} ${robotoMono.variable} antialiased`}>
         <Logo />
         {children}
+        <Toaster position="top-right" />
+
       </body>
     </html>
   );
 }
+
+

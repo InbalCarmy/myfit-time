@@ -344,31 +344,6 @@ useEffect(() => {
             <div className="goal-label">{goalText}</div>
           </div>
         </div>
-
-
-        {/* <div className="challenge card">
-          <div className="card-header">
-            <img src="/challenge-icon.png" alt="Challenge Icon" className="challenge-icon" />
-            <h4>Challenge of the week</h4>
-          </div>
-          <p>Sprint the last 500 meters of your third run this week</p>
-          <small>Push your limits and finish strong!</small>
-          <div className="challenge-icons">
-            <span className="pill">Run 1</span>
-            <span className="pill">Run 2</span>
-            <span className="pill-qlock">⏱</span>
-          </div>
-        </div> */}
-                {/* new Smart Plan card */}
-          {/* <div className="smart-plan card">
-            <div className="smart-plan-header">
-              <img src="/ai-icon.png" alt="Smart Plan Icon" className="smart-plan-icon" />
-              <h4 className="smart-plan-title">Smart Plan</h4>
-            </div>
-            <button className="smart-plan-btn" onClick={() => router.push('/smart-plan')}>
-              Generate Smart Plan
-            </button>
-          </div> */}
       </section>
 
         <SideNav />
