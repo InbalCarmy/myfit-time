@@ -16,20 +16,20 @@
 .smart-plan-overlay {
   width: calc(90% - 120px); 
   max-width: 1400px;
-  height: 75vh; /* גובה קבוע כדי שהגרדיאנט יעבוד */
+  height: 75vh; /* Fixed height so gradient works */
   border-radius: 1.5rem;
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.5) 0%,  /* יותר אטום למעלה */
-    rgba(255, 255, 255, 0.4) 50%,  /* שקיפות בינונית באמצע */
-    rgba(255, 255, 255, 0.1) 80%, /* כמעט שקוף */
-    rgba(255, 255, 255, 0) 100%    /* שקוף לגמרי בתחתית */
+    rgba(255, 255, 255, 0.5) 0%,  /* More opaque at top */
+    rgba(255, 255, 255, 0.4) 50%,  /* Medium transparency in middle */
+    rgba(255, 255, 255, 0.1) 80%, /* Almost transparent */
+    rgba(255, 255, 255, 0) 100%    /* Completely transparent at bottom */
   );
-  backdrop-filter: blur(4px); /* טשטוש עדין */
+  backdrop-filter: blur(4px); /* Gentle blur */
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* שהכותרת תהיה למעלה */
+  justify-content: flex-start; /* So title will be at top */
   align-items: center;
    margin-right: 120px;
 }
@@ -78,7 +78,7 @@
 }
 
 .smart-plan-ai-btn img {
-  width: 34px; /* קטן יותר */
+  width: 34px; /* Smaller */
   height: 34px;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .week-nav-btn img {
-  width: 28px; /* גודל החץ */
+  width: 28px; /* Arrow size */
   height: 28px;
 }
 
@@ -183,9 +183,9 @@
   height: 2px;
   background: linear-gradient(
     to right,
-    rgba(113, 143, 150, 0),      /* שקוף בהתחלה */
-    rgba(113, 143, 150, 0.6),    /* אמצע חזק יותר */
-    rgba(113, 143, 150, 0)       /* שוב שקוף בסוף */
+    rgba(113, 143, 150, 0),      /* Transparent at start */
+    rgba(113, 143, 150, 0.6),    /* Stronger middle */
+    rgba(113, 143, 150, 0)       /* Transparent again at end */
   );
     margin: 20px 0;
 }

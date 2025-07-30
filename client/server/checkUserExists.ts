@@ -3,7 +3,7 @@
 
 // if (!admin.apps.length) {
 //   admin.initializeApp({
-//     credential: admin.credential.applicationDefault(), // או מפתח serviceAccount
+//     credential: admin.credential.applicationDefault(), // or serviceAccount key
 //   });
 // }
 

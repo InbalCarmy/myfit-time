@@ -66,8 +66,8 @@ html, body {
 
 .profile-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 עמודות */
-  gap: 2.5rem 3rem; /* ריווח בין שורות ועמודות */
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  gap: 2.5rem 3rem; /* Spacing between rows and columns */
   padding: 3vh 4vw;
   max-width: 1000px;
   margin: 0 auto;
@@ -173,7 +173,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  max-width: 380px; /* אפשר גם 100% אם בתוך גריד */
+  max-width: 380px; /* Can also be 100% if inside grid */
   width: 100%;
   position: relative;
   color: #718F96;
@@ -203,7 +203,7 @@ html, body {
   font-family: 'Overlock', cursive;
   font-style: italic;
   font-size: 1rem;
-    min-width: 100px; /* נסי גם 120px או יותר */
+    min-width: 100px; /* Try also 120px or more */
   width: 100%;
   margin-bottom: 1rem;
 }

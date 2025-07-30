@@ -105,12 +105,12 @@ useEffect(() => {
       workoutDate.setHours(0, 0, 0, 0);
       const dateStr = workoutDate.toISOString().split('T')[0];
 
-      // סטטוסים לשבוע
+      // Weekly statuses
       if (workoutDate >= startOfWeek && workoutDate <= endOfWeek) {
         weeklyMap[dateStr] = data.status;
       }
 
-      // חישובים רק לאימונים שבוצעו
+      // Calculations only for completed workouts
       if (
         workoutDate >= startOfWeek &&
         workoutDate <= today &&
@@ -119,14 +119,14 @@ useEffect(() => {
         totalDistance += parseFloat(data.distance || '0');
         totalCalories += parseFloat(data.calories || '0');
 
-        // לסטטוס ההתקדמות
+        // For progress status
         completedRuns.push({
           date: data.date,
           distance: parseFloat(data.distance || '0'),
           durationMin: parseDurationToMinutes(data.duration || ''),
         });
 
-        // ממוצע קצב
+        // Average pace
         if (data.pace && typeof data.pace === 'string') {
           const [minStr, secStr] = data.pace.split("'");
           const min = parseInt(minStr);
@@ -150,7 +150,7 @@ useEffect(() => {
       setAveragePace(`${avgMin}'${avgSec < 10 ? '0' : ''}${avgSec}"`);
     }
 
-    // יצירת סטטוסים מראשון עד שבת
+    // Create statuses from Sunday to Saturday
     const days: string[] = Array.from({ length: 7 }, (_, i) =>
       new Date(startOfWeek.getTime() + i * 86400000).toISOString().split('T')[0]
     );
@@ -164,7 +164,7 @@ useEffect(() => {
     );
     setWeeklyStatus(statuses);
 
-    // 🔄 חישוב התקדמות לעבר מטרה
+    // 🔄 Calculate progress towards goal
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
@@ -190,7 +190,7 @@ useEffect(() => {
 
     }
 
-  // שליפת כל האימונים המתוכננים מהעתיד
+  // Fetch all planned workouts from the future
     const plannedQuery = query(
       collection(db, 'workouts'),
       where('userId', '==', user.uid),

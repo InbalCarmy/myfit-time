@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import './diary.css';
 import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
-import { db } from '@/firebase/firebaseConfig'; // או הנתיב שלך לקובץ config
+import { db } from '@/firebase/firebaseConfig'; // Or your path to the config file
 import { auth } from '@/firebase/firebaseConfig';
 import { useEffect } from 'react';
 import { query, where, getDocs } from 'firebase/firestore';
@@ -64,7 +64,7 @@ export default function DiaryPage() {
         ...doc,
       });
     } else {
-      // אם אין אימון ביום הזה – אפס את השדות למעט התאריך
+      // If no workout on this day – reset fields except date
       setFormData({
         date: selectedDate.toISOString().split('T')[0],
         distance: '',
@@ -148,17 +148,17 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   const value = parseInt(e.target.value);
   setFormData({ ...formData, effort: value });
 
-  // חישוב אחוז מילוי
+  // Calculate fill percentage
   const percent = ((value - 1) / 4) * 100;
 
-  // בחירת צבע לפי רמה
+  // Choose color by level
   const getColor = (val: number) => {
     switch (val) {
-      case 1: return '#7ED957'; // ירוק קל
-      case 2: return '#F2C94C'; // צהוב
-      case 3: return '#F2994A'; // כתום
-      case 4: return '#EB5757'; // אדום
-      case 5: return '#960018'; // אדום כהה
+      case 1: return '#7ED957'; // Light green
+      case 2: return '#F2C94C'; // Yellow
+      case 3: return '#F2994A'; // Orange
+      case 4: return '#EB5757'; // Red
+      case 5: return '#960018'; // Dark red
       default: return '#ccc';
     }
     };
@@ -170,7 +170,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
   const rect = e.currentTarget.getBoundingClientRect();
-  const x = e.clientX - rect.left; // מיקום עכבר בתוך הסליידר
+  const x = e.clientX - rect.left; // Mouse position within the slider
   const width = rect.width;
   const step = width / 5;
 
@@ -200,7 +200,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
 //     await addDoc(collection(db, 'workouts'), {
 //       ...formData,
-//       pace: formattedPace, // ← שמור בפורמט טקסט
+//       pace: formattedPace, // ← Save in text format
 //       date: selectedDate.toISOString().split('T')[0],
 //       userId: user.uid,
 //       userEmail: user.email,
@@ -226,7 +226,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     await addDoc(collection(db, 'workouts'), {
       ...formData,
-      pace: formattedPace, // ← שמור בפורמט טקסט
+      pace: formattedPace, // ← Save in text format
       date: selectedDate.toISOString().split('T')[0],
       userId: user.uid,
       userEmail: user.email,
@@ -235,8 +235,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     console.log('Workout saved!');
-    setSaveSuccess(true); // ← מציג את הודעת ה-Saved
-    setTimeout(() => setSaveSuccess(false), 2000); // ← נעלם אחרי 2 שניות
+    setSaveSuccess(true); // ← Shows the Saved message
+    setTimeout(() => setSaveSuccess(false), 2000); // ← Disappears after 2 seconds
 
   } catch (error) {
     console.error('Error saving workout:', error);
@@ -375,7 +375,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
       )}
 
-        {/* חצים */}
+        {/* Arrows */}
         <div className="navigation-arrows">
           <button type="button" onClick={() => changeDate(-1)} className="arrow-btn left-arrow">
             <img src="/arrow-left.png" alt="Previous Day" />

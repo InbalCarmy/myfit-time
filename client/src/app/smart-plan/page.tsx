@@ -25,8 +25,8 @@ useEffect(() => {
   if (savedPlan) {
     const parsed = JSON.parse(savedPlan);
 
-    // parsed.plan = כל התוכנית עם האימונים
-    // parsed.userData = המידע של המשתמש (trainingGoal, targetDate וכו')
+    // parsed.plan = entire plan with workouts
+    // parsed.userData = user info (trainingGoal, targetDate etc.)
 
     setSmartPlan(parsed.plan);
     setUserData(parsed.userData);
@@ -98,15 +98,15 @@ useEffect(() => {
   };
 
   const regeneratePlan = async () => {
-  // מוחקים את הישנה מה-localStorage כדי לא להציג אותה יותר
+  // Delete the old one from localStorage to not display it anymore
   localStorage.removeItem("savedSmartPlan");
   await generatePlan();
 };
 
 
-  // פונקציה לקיבוץ לפי שבועות
+  // Function to group by weeks
 function groupWorkoutsByWeek(workouts: any[]) {
-  // קודם כל נמיין את האימונים לפי תאריך מהישן לחדש
+  // First sort workouts by date from old to new
   const sortedWorkouts = [...workouts].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -116,23 +116,23 @@ function groupWorkoutsByWeek(workouts: any[]) {
   sortedWorkouts.forEach((workout) => {
     const workoutDate = new Date(workout.date);
 
-    // נמצא את יום ראשון של השבוע של האימון הזה
+    // Find the first day of the week for this workout
     const day = workoutDate.getDay(); // 0=Sunday, 1=Monday...
-    const diffToSunday = day; // כי יום ראשון זה 0
+    const diffToSunday = day; // Because Sunday is 0
     const sunday = new Date(workoutDate);
     sunday.setDate(workoutDate.getDate() - diffToSunday);
     sunday.setHours(0, 0, 0, 0);
 
     const sundayKey = sunday.toISOString();
 
-    // מוסיפים את האימון לשבוע המתאים
+    // Add workout to the appropriate week
     if (!weeksMap.has(sundayKey)) {
       weeksMap.set(sundayKey, []);
     }
     weeksMap.get(sundayKey)!.push(workout);
   });
 
-  // ממירים את המפה למערך עם start + workouts, וממיינים לפי התאריך של ראשון
+  // Convert map to array with start + workouts, sorted by first date
   const weeks = Array.from(weeksMap.entries()).map(([startKey, weekWorkouts]) => ({
     start: new Date(startKey),
     workouts: weekWorkouts,
@@ -153,11 +153,11 @@ function groupWorkoutsByWeek(workouts: any[]) {
 //     for (const workout of smartPlan.workouts) {
 //       await addDoc(collection(db, "workouts"), {
 //         userId: user.uid,
-//         date: workout.date,          // התאריך של האימון
-//         time: workout.time,          // השעה שה-AI נתן
-//         type: workout.type,          // סוג האימון
-//         distance: workout.distance,  // המרחק
-//         status: "planned",           // שומר כמתוכנן
+//         date: workout.date,          // The workout date
+//         time: workout.time,          // The time AI provided
+//         type: workout.type,          // Workout type
+//         distance: workout.distance,  // The distance
+//         status: "planned",           // Save as planned
 //         createdAt: new Date().toISOString(),
 //       });
 //     }
@@ -187,9 +187,9 @@ const savePlanToFirestore = async () => {
       });
     }
 
-    // ✅ כאן נוסיף שמירה ל-localStorage
+    // ✅ Here we add saving to localStorage
     localStorage.setItem("savedSmartPlan", JSON.stringify(smartPlan));
-    // ✅ נשמור גם את התוכנית וגם את userData
+    // ✅ Save both the plan and userData
     localStorage.setItem(
       "savedSmartPlan",
       JSON.stringify({
@@ -208,7 +208,7 @@ const savePlanToFirestore = async () => {
 
 const savePlanToGoogleCalendar = async () => {
   try {
-    // מבטיחים שהמשתמש מחובר לגוגל ויש לנו token
+    // Ensure user is connected to Google and we have a token
     const token = await ensureGoogleCalendarAccess();
     if (!token) {
       console.warn("No Google Calendar token found");
@@ -219,10 +219,10 @@ const savePlanToGoogleCalendar = async () => {
       const workoutDate = new Date(workout.date);
       const [hour, minute] = workout.time.split(":").map(Number);
 
-      // סט זמן התחלה
+      // Set start time
       workoutDate.setHours(hour, minute, 0, 0);
 
-      // זמן סיום (נוסיף שעה אחת כברירת מחדל)
+      // End time (add one hour as default)
       const workoutEnd = new Date(workoutDate.getTime() + 60 * 60 * 1000);
 
       const event = {
@@ -230,7 +230,7 @@ const savePlanToGoogleCalendar = async () => {
         description: "Planned by MyFitTime AI Smart Plan 🏃‍♀️",
         start: {
           dateTime: workoutDate.toISOString(),
-          timeZone: "Asia/Jerusalem", // או לשנות לפי אזור זמן שלך
+          timeZone: "Asia/Jerusalem", // Or change according to your timezone
         },
         end: {
           dateTime: workoutEnd.toISOString(),
@@ -238,7 +238,7 @@ const savePlanToGoogleCalendar = async () => {
         },
       };
 
-      // שולחים לגוגל
+      // Send to Google
       const res = await fetch(
         "https://www.googleapis.com/calendar/v3/calendars/primary/events",
         {
@@ -272,9 +272,9 @@ const groupedByWeek = smartPlan?.workouts
 
   return (
     <div className="smart-plan-page">
-      {/* תיבה שקופה עם gradient */}
+      {/* Transparent box with gradient */}
       <div className="smart-plan-overlay">
-        {/* מצב ראשוני */}
+        {/* Initial state */}
         {!smartPlan && !loading && (
           <div className="smart-plan-content">
             <h1 className="smart-plan-title">AI Smart Plan</h1>
@@ -284,14 +284,14 @@ const groupedByWeek = smartPlan?.workouts
           </div>
         )}
 
-        {/* בזמן טעינה */}
+        {/* During loading */}
         {loading && (
           <div className="smart-plan-loading">
             Generating your plan...
           </div>
         )}
 
-        {/* אחרי שהתוכנית מוכנה */}
+        {/* After plan is ready */}
         {smartPlan && (
           <div className="smart-plan-ready-container">
             <h2 className="smart-plan-ready">Your Smart Plan is Ready!</h2>
@@ -301,7 +301,7 @@ const groupedByWeek = smartPlan?.workouts
 
             {groupedByWeek.length > 0 && (
               <div className="smart-plan-week">
-                {/* ניווט שבועות */}
+                {/* Week navigation */}
                 <div className="week-header">
                   <button
                     disabled={currentWeekIndex === 0}
@@ -347,7 +347,7 @@ const groupedByWeek = smartPlan?.workouts
 
                 <hr />
 
-                {/* סיכום */}
+                {/* Summary */}
                 <div className="smart-plan-summary">
                   <p>
                     <strong>Goal:</strong> {userData?.trainingGoal?.type} 
@@ -365,7 +365,7 @@ const groupedByWeek = smartPlan?.workouts
                   </p>
                 </div>
 
-                {/* כפתורים */}
+                {/* Buttons */}
               {loading ? (
                 <div className="smart-plan-loading">Regenerating your plan...</div>
               ) : (

@@ -9,9 +9,9 @@ export interface WeeklyGoal {
 }
 
 export interface RunEntry {
-  date: Timestamp;          // תאריך האימון
-  distance ?: number;      // מרחק בק"מ
-  durationMin?: number;     // משך בדקות
+  date: Timestamp;          // workout date
+  distance ?: number;      // distance in km
+  durationMin?: number;     // duration in minutes
 }
 
 export function calculateWeeklyProgress(goal: WeeklyGoal, runs: RunEntry[]): number {
@@ -25,7 +25,7 @@ export function calculateWeeklyProgress(goal: WeeklyGoal, runs: RunEntry[]): num
   endOfWeek.setDate(startOfWeek.getDate() + 6);
   endOfWeek.setHours(23, 59, 59, 999);
 
-  // סינון אימונים שבוצעו השבוע
+  // Filter workouts completed this week
   const weeklyRuns = runs.filter((run) => {
 const runDate = typeof run.date === 'string' ? new Date(run.date) : run.date.toDate();
     return runDate >= startOfWeek && runDate <= endOfWeek;
@@ -45,6 +45,6 @@ const runDate = typeof run.date === 'string' ? new Date(run.date) : run.date.toD
       break;
   }
 
-  // החזרת ערך בין 0 ל-1
+  // Return value between 0 and 1
   return Math.min(progress / goal.value, 1);
 }

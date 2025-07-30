@@ -30,7 +30,7 @@ const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, defaultTime =
     try {
       let googleEventId: string | null = null;
 
-      // 1. אם המשתמש בחר לשמור גם בגוגל קלנדר
+      // 1. If user chose to save to Google Calendar too
       if (addToCalendar) {
         const token = await ensureGoogleCalendarAccess();
         if (!token) return;
@@ -71,7 +71,7 @@ const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, defaultTime =
         }
       }
 
-      // 2. שמירה ל־Firestore (כולל googleEventId אם יש)
+      // 2. Save to Firestore (including googleEventId if exists)
       await setDoc(doc(db, 'workouts', `${userId}_${date}`), {
         date,
         userId,
@@ -82,7 +82,7 @@ const PlanWorkoutModal: React.FC<PlanWorkoutModalProps> = ({ date, defaultTime =
         ...(googleEventId && { googleEventId }),
       });
 
-      // 3. סיום
+      // 3. Finish
       onSave();
     } catch (err) {
       console.error('Error saving workout:', err);

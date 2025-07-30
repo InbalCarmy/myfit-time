@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import './SideNav.css'; // אפשר לשמור את ה-CSS בנפרד
+import './SideNav.css'; // Can keep the CSS in a separate file
 
 export default function SideNav() {
   const router = useRouter();

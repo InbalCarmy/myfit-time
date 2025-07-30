@@ -4,9 +4,9 @@ import { db } from './firebaseConfig';
 import { User } from 'firebase/auth';
 
 /**
- * שומר משתמש במסד Firestore אם הוא לא קיים כבר.
- * @param user - אובייקט המשתמש מ-Firebase
- * @param displayName - (לא חובה) שם מלא שהוזן ידנית בטופס
+ * Saves user to Firestore database if they don't already exist.
+ * @param user - The user object from Firebase
+ * @param displayName - (optional) Full name entered manually in form
  */
 export const saveUserToFirestore = async (user: User, displayName?: string) => {
   if (!user?.uid) return;

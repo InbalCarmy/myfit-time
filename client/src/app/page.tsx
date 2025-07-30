@@ -43,13 +43,13 @@ export default function HomePage() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
-      await saveUserToFirestore(user); // שמירת המשתמש אם חדש
+      await saveUserToFirestore(user); // Save user if new
       console.log('✅ Logged in as:', user.email);
 
       router.push('/dashboard');
     } catch (error) {
       console.error('❌ Google login error:', error);
-      setErrorMessage('שגיאה בהתחברות עם Google');
+      setErrorMessage('Error logging in with Google');
     }
   };
 

@@ -115,7 +115,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* חשוב! */
+  height: 100vh; /* Important! */
   width: 100%;
   background: url('/running-bg.jpg') center center / cover no-repeat;
   font-family: 'Nunito', sans-serif;

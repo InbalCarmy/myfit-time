@@ -12,7 +12,7 @@ const getWeekDates = (baseDate: Date): string[] => {
   const date = new Date(baseDate);
   const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
   const sunday = new Date(date);
-  sunday.setDate(date.getDate() - dayOfWeek); // מחזיר ליום ראשון של השבוע הנוכחי
+  sunday.setDate(date.getDate() - dayOfWeek); // Returns to the first day of current week
 
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(sunday);
@@ -152,7 +152,7 @@ useEffect(() => {
       setUserId(user.uid);
       fetchWorkouts(user.uid, currentWeek);
 
-      // 🔄 שליפת preferredTime מ־Firestore
+      // 🔄 Fetch preferredTime from Firestore
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
@@ -164,7 +164,7 @@ useEffect(() => {
       setWorkouts({});
     }
 
-    console.log('🗓 ימות השבוע שנשלפו:', getWeekDates(currentWeek).map(d => format(new Date(d), 'EEEE')));
+    console.log('🗓 Week days fetched:', getWeekDates(currentWeek).map(d => format(new Date(d), 'EEEE')));
   });
 
   return () => unsubscribe();

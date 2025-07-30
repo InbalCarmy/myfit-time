@@ -27,7 +27,7 @@ body, html {
 }
 
 
-/* מיקומים לכל כרטיס */
+/* Positions for each card */
 .weekly-running {
   grid-column: 4 / span 7;
   grid-row: 1;
@@ -44,7 +44,7 @@ body, html {
 }
 
 .smart-plan {
-  grid-column: 5 / span 5; /* מתאים למבנה של שאר הכרטיסים */
+  grid-column: 5 / span 5; /* Matches the structure of other cards */
   grid-row: 2;
 }
 
@@ -72,8 +72,8 @@ body, html {
 
 .weekly-goal {
   width: clamp(180px, 18vw, 260px);
-  height: auto; /* לא נכפה גובה מיותר */
-  max-width: 260px; /* לא יגדל מעבר */
+  height: auto; /* Don't force extra height */
+  max-width: 260px; /* Won't grow beyond this */
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 16px;
@@ -81,7 +81,7 @@ body, html {
   font-family: 'Overlock', sans-serif;
   color: #718F96;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  justify-self: center; /* שיהיה ממורכז בגריד */
+  justify-self: center; /* Will be centered in grid */
   place-self: center;
 }
 
@@ -113,7 +113,7 @@ body, html {
   align-items: center;
   /* gap: 6px; */
   width: clamp(260px, 26vw, 360px);
-  /* 👇 אין height כאן */
+  /* 👇 No height here */
 }
 
 .next-workout h4 {
@@ -290,9 +290,9 @@ body, html {
 } */
 .circle-goal {
   display: block;
-  width: 100%;          /* תמיד ממלא את רוחב הכרטיס */
-  max-width: 130px;     /* לא יעבור גודל מסוים */
-  aspect-ratio: 1/1;    /* תמיד ריבוע → נשאר עיגול */
+  width: 100%;          /* Always fills card width */
+  max-width: 130px;     /* Won't exceed specific size */
+  aspect-ratio: 1/1;    /* Always square → stays circular */
   margin: 20px auto 0;
   position: relative;
 }
@@ -304,7 +304,7 @@ body, html {
 .progress-bar {
   transition: stroke-dasharray 0.6s ease;
   stroke-linecap: round;
-  transform: rotate(-90deg); /* שהמילוי יתחיל מלמעלה */
+  transform: rotate(-90deg); /* So filling starts from top */
   transform-origin: center;
   transform: rotate(-15deg);
 
@@ -398,10 +398,10 @@ background-color: rgba(113, 143, 150, 0.4);
 
 
 .dashboard-icon {
-  width: 18px;   /* מקטין את האייקון */
+  width: 18px;   /* Shrinks the icon */
   height: 18px;
   opacity: 0.9;
-  flex-shrink: 0; /* מונע מהאייקון להתכווץ */
+  flex-shrink: 0; /* Prevents icon from shrinking */
   margin-bottom: -2px;
 }
 
@@ -450,8 +450,8 @@ gap: 10px;
   flex-direction: column;
   align-items: center;
   width: clamp(260px, 50vw, 360px);
-  min-height: 160px; /* ✅ נשאר כדי לשמור גובה מינימום */
-  height: auto; /* ✅ נותן לכרטיס להתאים את עצמו לתוכן */
+  min-height: 160px; /* ✅ Stays to maintain minimum height */
+  height: auto; /* ✅ Lets card adapt to content */
 }
 
 
@@ -469,11 +469,11 @@ gap: 10px;
 .smart-plan-header {
   display: flex;
   flex-direction: row;
-  align-items: center; /* יישור אנכי */
+  align-items: center; /* Vertical alignment */
   justify-content: center;
   gap: 8px;
   margin-bottom: 20px;
-  min-height: 40px; /* ✅ גובה מינימלי קבוע מראש */
+  min-height: 40px; /* ✅ Fixed minimum height upfront */
 }
 
 

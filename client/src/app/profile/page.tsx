@@ -56,7 +56,7 @@ const [userData, setUserData] = useState<UserData | null>(null);
   const handleLogout = async () => {
   try {
     await auth.signOut();
-    router.push('/'); // משנה ל־login אם זה הנתיב שלך
+    router.push('/'); // Change to login if that's your route
   } catch (error) {
     console.error('❌ Error during logout:', error);
   }
@@ -87,10 +87,10 @@ const handleSaveWeeklyGoal = async () => {
     const userRef = doc(db, 'users', user.uid);
     await updateDoc(userRef, {
     weeklyGoal: {
-      type: 'distance', // 🟢 תמיד "distance"
+      type: 'distance', // 🟢 Always "distance"
       value: goalValue,
     },
-      trainingGoal: goalType, // 🟢 שדה נוסף ל-trainingGoal
+      trainingGoal: goalType, // 🟢 Additional field for trainingGoal
     });
     alert('Goal saved!');
   } catch (err) {
@@ -106,7 +106,7 @@ const handleSaveWeeklyGoal = async () => {
         return;
       }
 
-      // הבאת נתוני המשתמש
+      // Fetch user data
       const docRef = doc(db, 'users', user.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -114,7 +114,7 @@ const handleSaveWeeklyGoal = async () => {
         setUserData(data);
         console.log('📦 userData loaded:', data);
 
-        // ✅ הוספה: טעינת trainingGoal
+        // ✅ Addition: loading trainingGoal
         if (data.trainingGoal) {
           setTrainingGoalType(data.trainingGoal.type || 'general');
           if (data.trainingGoal.targetDate) {
@@ -130,7 +130,7 @@ const handleSaveWeeklyGoal = async () => {
       }
 
 
-      // חישוב מרחק שבועי
+      // Calculate weekly distance
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -158,7 +158,7 @@ const handleSaveWeeklyGoal = async () => {
       });
 
       setWeeklyDistance(total);
-      // 🟠 חישוב נתונים מצטברים מכל האימונים
+      // 🟠 Calculate aggregate data from all workouts
       let runs = 0;
       let totalDist = 0;
       let totalDurMin = 0;
@@ -253,7 +253,7 @@ const handleSaveWeeklyGoal = async () => {
         </div>
       </div>
 
-        {/* 💡 עטפנו את כל התיבות ב-check על userData */}
+        {/* 💡 Wrapped all boxes with userData check */}
   {userData && (
       <div className="profile-grid">
       <div className="profile-card profile-goal">
@@ -290,7 +290,7 @@ const handleSaveWeeklyGoal = async () => {
         </div>
       </div>
 
-        {/* 🟢 preferences – בעיצוב חדש */}
+        {/* 🟢 preferences – in new design */}
     <div className="profile-card profile-prefs">
       <div className="profile-section prefs">
         <h2 className="profile-title"># Preferences</h2>

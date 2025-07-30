@@ -12,7 +12,7 @@ export const ensureGoogleCalendarAccess = async (): Promise<string | null> => {
   const savedToken = localStorage.getItem('googleAccessToken');
   const savedEmail = localStorage.getItem('googleTokenUserEmail');
 
-  // 🧪 בדיקה אם הטוקן שמור תואם למשתמש הנוכחי ועדיין תקף
+  // 🧪 Check if saved token matches current user and is still valid
   if (savedToken && currentEmail === savedEmail) {
     try {
       const response = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${savedToken}`);
@@ -27,12 +27,12 @@ export const ensureGoogleCalendarAccess = async (): Promise<string | null> => {
       console.error('❌ Token check failed:', e);
     }
 
-    // ננקה את הטוקן הלא תקף
+    // Clear the invalid token
     localStorage.removeItem('googleAccessToken');
     localStorage.removeItem('googleTokenUserEmail');
   }
 
-  // 🧑‍🚀 התחברות חדשה עם גוגל לקבלת טוקן חדש
+  // 🧑‍🚀 New Google connection to get new token
   try {
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
@@ -110,13 +110,13 @@ type CalendarEvent = {
 //   for (let d = new Date(today); d <= endOfWeekDate; d.setDate(d.getDate() + 1)) {
 //     const dateStr = format(d, 'yyyy-MM-dd');
 
-//     // דלג על ימים שיש בהם אימון מתוכנן/שבוצע
+//     // Skip days with planned/completed workouts
 //     if (existingWorkoutDates.includes(dateStr)) continue;
 
 //     const dayStart = new Date(d);
 //     const dayEnd = endOfDay(dayStart);
 
-//     // נתחיל משעה עגולה: אם זה היום, אז שעה קדימה מהשעה הנוכחית; אם זה יום אחר – 08:00
+//     // Start from rounded hour: if today, then one hour ahead from current time; if another day - 08:00
 //     let currentHour = isSameDay(d, now)
 //       ? now.getHours() + 1
 //       : 8;
@@ -125,9 +125,9 @@ type CalendarEvent = {
 //       const slotStart = new Date(dayStart);
 //       slotStart.setHours(currentHour, 0, 0, 0);
 
-//       const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000); // שעה
+//       const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000); // one hour
 
-//       // בדוק אם יש התנגשות עם אירועים
+//       // Check for conflicts with events
 //       const hasConflict = sortedEvents.some(event =>
 //         isWithinInterval(slotStart, { start: event.start, end: event.end }) ||
 //         isWithinInterval(slotEnd, { start: event.start, end: event.end }) ||
@@ -136,14 +136,14 @@ type CalendarEvent = {
 
 //       if (!hasConflict && slotEnd <= dayEnd) {
 //         freeSlots.push({ start: slotStart, end: slotEnd });
-//         break; // רק שעה אחת ליום
+//         break; // only one hour per day
 //       }
 
 //       currentHour++;
 //     }
 //   }
 
-//   console.log('🎯 כל ההצעות לשעה פנויה:', freeSlots);
+//   console.log('🎯 All free time slot suggestions:', freeSlots);
 //   return freeSlots;
 // };
 export const getFreeTimeSlotsFiltered = (
@@ -212,7 +212,7 @@ export const getFreeTimeSlotsFiltered = (
     }
   }
 
-  console.log('🎯 כל ההצעות לשעה פנויה:', freeSlots);
+  console.log('🎯 All free time slot suggestions:', freeSlots);
   return freeSlots;
 };
 
@@ -284,6 +284,6 @@ export const getFreeTimeSlotsUntilTargetDate = (
     }
   }
 
-  console.log('🎯 כל ההצעות לשעה פנויה עד התאריך:', freeSlots);
+  console.log('🎯 All free time slot suggestions until date:', freeSlots);
   return freeSlots;
 };

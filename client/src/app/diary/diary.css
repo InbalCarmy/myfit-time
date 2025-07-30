@@ -109,7 +109,7 @@ textarea[name="notes"] {
   border-radius: 16px;
   border: none;
   resize: vertical;
-  background-color: rgba(255, 255, 255, 0.3); /* רקע עם שקיפות */
+  background-color: rgba(255, 255, 255, 0.3); /* Background with transparency */
   color: rgba(161, 110, 65, 0.5);
   font-size: 16px;
   font-weight: 600;
@@ -133,7 +133,7 @@ textarea[name="notes"]::placeholder {
   gap: 0.5rem;
 }
 
-/* בסיס ה־slider */
+/* Slider base */
 input[type="range"] {
   -webkit-appearance: none;
   width: 100%;
@@ -145,7 +145,7 @@ input[type="range"] {
   cursor: pointer;
 }
 
-/* העיגול של הסליידר */
+/* The slider circle */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 20px;
@@ -164,7 +164,7 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 
-/* אפקט hover */
+/* Hover effect */
 input[type="range"]:hover::-webkit-slider-thumb {
   background: #4e7077;
 }
@@ -344,7 +344,7 @@ textarea:focus {
 }
 
 
-/* 📱 מסכים קטנים */
+/* 📱 Small screens */
 @media (max-width: 768px) {
   .diary-form {
     padding: 2rem;
