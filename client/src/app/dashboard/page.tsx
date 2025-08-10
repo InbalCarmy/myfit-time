@@ -65,6 +65,17 @@ const [userData, setUserData] = useState<UserData | null>(null);
   return isNaN(minutes) ? 0 : minutes + Math.floor((seconds || 0) / 60);
   }
   
+// Force layout recalculation on component mount
+useEffect(() => {
+  // Force a reflow to ensure CSS is applied correctly
+  const smartPlanElement = document.querySelector('.smart-plan-header');
+  if (smartPlanElement) {
+    smartPlanElement.style.display = 'none';
+    smartPlanElement.offsetHeight; // Force reflow
+    smartPlanElement.style.display = 'flex';
+  }
+}, []);
+
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
     if (!user) return;
@@ -315,11 +326,12 @@ useEffect(() => {
           )}
         </div>
 
-          <div className="smart-plan card">
+          <div className="smart-plan card" key="smart-plan">
             <div className="smart-plan-header">
               <img src="/ai-icon.png" alt="Smart Plan Icon" className="smart-plan-icon" />
               <h4 className="smart-plan-title">Smart Plan</h4>
             </div>
+            <div className="smart-plan-spacer"></div>
             <button className="smart-plan-btn" onClick={() => router.push('/smart-plan')}>
               Generate Smart Plan
             </button>

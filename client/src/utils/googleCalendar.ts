@@ -64,26 +64,17 @@ export const ensureGoogleCalendarAccess = async (): Promise<string | null> => {
 
 
 
-export const fetchGoogleCalendarEvents = async (accessToken: string) => {
-  const now = new Date().toISOString();
-  const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-
-  const response = await axios.get(
-    'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        timeMin: now,
-        timeMax: nextWeek,
-        singleEvents: true,
-        orderBy: 'startTime',
-      },
-    }
+export const fetchGoogleCalendarEvents = async (
+  accessToken: string,
+  timeMin?: string,
+  timeMax?: string
+) => {
+  const { calendarAPI } = await import('@/services/api');
+  return await calendarAPI.getEvents(
+    accessToken,
+    timeMin || new Date().toISOString(),
+    timeMax || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   );
-
-  return response.data.items;
 };
 
 type CalendarEvent = {
@@ -217,73 +208,19 @@ export const getFreeTimeSlotsFiltered = (
 };
 
 
-export const getFreeTimeSlotsUntilTargetDate = (
+export const getFreeTimeSlotsUntilTargetDate = async (
   events: CalendarEvent[],
   existingWorkoutDates: string[],
   preferredTime: 'morning' | 'afternoon' | 'evening' = 'morning',
   targetDate: Date
 ) => {
   console.log("📅 Target date received:", targetDate);
-  const now = new Date();
-  const today = startOfDay(now);
-  const endDate = new Date(targetDate);
-
-  let earliest = 8;
-  let latest = 22;
-
-  if (preferredTime === 'morning') {
-    earliest = 7;
-    latest = 12;
-  } else if (preferredTime === 'afternoon') {
-    earliest = 12;
-    latest = 17;
-  } else if (preferredTime === 'evening') {
-    earliest = 17;
-    latest = 21;
-  }
-
-  const sortedEvents = [...events]
-    .filter(e => e.start?.dateTime && e.end?.dateTime)
-    .map(e => ({
-      start: new Date(e.start.dateTime),
-      end: new Date(e.end.dateTime),
-    }))
-    .sort((a, b) => a.start.getTime() - b.start.getTime());
-
-  const freeSlots: { start: Date; end: Date }[] = [];
-
-  for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const dateStr = format(d, 'yyyy-MM-dd');
-    if (existingWorkoutDates.includes(dateStr)) continue;
-
-    const dayStart = new Date(d);
-    const dayEnd = endOfDay(dayStart);
-
-    let currentHour = isSameDay(d, now)
-      ? Math.max(now.getHours() + 1, earliest)
-      : earliest;
-
-    while (currentHour < latest) {
-      const slotStart = new Date(dayStart);
-      slotStart.setHours(currentHour, 0, 0, 0);
-
-      const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
-
-      const hasConflict = sortedEvents.some(event =>
-        isWithinInterval(slotStart, { start: event.start, end: event.end }) ||
-        isWithinInterval(slotEnd, { start: event.start, end: event.end }) ||
-        (event.start <= slotStart && event.end >= slotEnd)
-      );
-
-      if (!hasConflict && slotEnd <= dayEnd) {
-        freeSlots.push({ start: slotStart, end: slotEnd });
-        break;
-      }
-
-      currentHour++;
-    }
-  }
-
-  console.log('🎯 All free time slot suggestions until date:', freeSlots);
-  return freeSlots;
+  const { calendarAPI } = await import('@/services/api');
+  
+  return await calendarAPI.getFreeSlots(
+    events,
+    existingWorkoutDates,
+    preferredTime,
+    targetDate.toISOString()
+  );
 };

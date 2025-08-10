@@ -1,26 +1,20 @@
 
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from './firebaseConfig';
 import { User } from 'firebase/auth';
+import { authAPI } from '@/services/api';
 
 /**
- * Saves user to Firestore database if they don't already exist.
+ * Saves user to server via API if they don't already exist.
  * @param user - The user object from Firebase
- * @param displayName - (optional) Full name entered manually in form
  */
-export const saveUserToFirestore = async (user: User, displayName?: string) => {
+export const saveUserToFirestore = async (user: User) => {
   if (!user?.uid) return;
 
-  const userRef = doc(db, 'users', user.uid);
-  const userSnap = await getDoc(userRef);
-
-  if (userSnap.exists()) return;
-
-  await setDoc(userRef, {
-    uid: user.uid,
-    email: user.email,
-    displayName: user.displayName || '',
-    photoURL: user.photoURL || '',
-    createdAt: new Date(),
-  });
+  try {
+    const idToken = await user.getIdToken();
+    await authAPI.verifyToken(idToken);
+    console.log('✅ User verified and saved via API');
+  } catch (error) {
+    console.error('❌ Error saving user via API:', error);
+    throw error;
+  }
 };

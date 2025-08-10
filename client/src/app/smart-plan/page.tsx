@@ -71,28 +71,28 @@ useEffect(() => {
     const events = await fetchGoogleCalendarEvents(token);
     const existingDates = diaryData.map(entry => entry.date);
     const preferredTime = userData.preferredTime || 'morning';
-    const freeSlots = getFreeTimeSlotsUntilTargetDate(
+    const freeSlots = await getFreeTimeSlotsUntilTargetDate(
       events,
       existingDates,
       preferredTime,
       new Date(userData.trainingGoal?.targetDate)
     );
 
-    const response = await fetch('/api/smart-plan', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    try {
+      const { smartPlanAPI } = await import('@/services/api');
+      const aiPlan = await smartPlanAPI.generatePlan({
         trainingGoal: userData.trainingGoal,
         targetDate: userData.trainingGoal?.targetDate,
         preferredWorkoutsPerWeek: userData.preferredWorkoutsPerWeek,
         diaryEntries: diaryData,
         freeSlots,
-      }),
-    });
-
-    const aiPlan = await response.json();
-    setSmartPlan(aiPlan);
-    console.log('🤖 AI Smart Plan:', aiPlan);
+      });
+      setSmartPlan(aiPlan);
+      console.log('🤖 AI Smart Plan:', aiPlan);
+    } catch (error) {
+      console.error('❌ Error generating smart plan:', error);
+      toast.error('Failed to generate smart plan. Please try again.');
+    }
 
     setLoading(false);
   };
